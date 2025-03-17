@@ -9,5 +9,5 @@
 .main-content {
   flex: 1;
   padding: 2rem 0;
-  background-color: $light-gray;
+  background-color: var(--light-gray);
 }

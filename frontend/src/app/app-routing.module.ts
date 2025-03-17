@@ -6,8 +6,8 @@ import { FeaturesComponent } from './pages/features/features.component';
 import { AboutComponent } from './pages/about/about.component';
 import { ReferencesComponent } from './pages/references/references.component';
 import { BlogComponent } from './pages/blog/blog.component';
-import { SecurityComponent } from './pages/security/security.component';
-import { FaqComponent } from './pages/faq/faq.component';
+import { SecurityComponent } from './pages/security/security.components';
+import { FaqComponent } from './pages/faq/faq.components';
 import { VideosComponent } from './pages/videos/videos.component';
 
 const routes: Routes = [
