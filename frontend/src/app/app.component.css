@@ -1,4 +1,4 @@
-@import '../styles/variables';
+@import '../styles/_variables.scss';
 
 .app-container {
   display: flex;
