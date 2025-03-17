@@ -1,0 +1,81 @@
+@import './styles/variables';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: $text-dark;
+  background-color: $light-gray;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 $container-padding;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+.btn {
+  display: inline-block;
+  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+  border-radius: $border-radius-full;
+  transition: background-color 0.3s, transform 0.2s;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-primary {
+  background-color: $primary-color;
+  color: $white;
+
+  &:hover {
+    background-color: darken($primary-color, 5%);
+  }
+}
+
+.btn-secondary {
+  background-color: $secondary-color;
+  color: $white;
+
+  &:hover {
+    background-color: darken($secondary-color, 5%);
+  }
+}
+
+.card {
+  background-color: $white;
+  border-radius: $border-radius;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $primary-color;
+  font-weight: 600;
+  line-height: 1.2;
+}
