@@ -8,7 +8,7 @@ import { NgFor } from '@angular/common';
   standalone: true,
   imports: [NgFor],
   templateUrl: './video-list.component.html',
-  styleUrl: './video-list.component.css'
+  styleUrl: './video-list.component.scss'
 })
 export class VideoListComponent implements OnInit{
   
