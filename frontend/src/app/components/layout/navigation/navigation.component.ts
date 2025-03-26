@@ -14,5 +14,6 @@ export class NavigationComponent {
     { path: '/security', label: 'Security' },
     { path: '/faq', label: 'FAQ' },
     { path: '/videos', label: 'Videos' },
+    { path: '/videoplayer', label: 'Videoplayer' }
   ];
 }

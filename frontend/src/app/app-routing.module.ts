@@ -10,6 +10,9 @@ import { SecurityComponent } from './pages/security/security.components';
 import { FaqComponent } from './pages/faq/faq.components';
 import { VideosComponent } from './pages/videos/videos.component';
 import { VideoListComponent } from './pages/auto-tag/video-list/video-list.component';
+import { VideoplayerComponent } from './pages/videoplayer/videoplayer.component';
+
+//Order of path is important (should be the same as in the routes array)
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -21,6 +24,7 @@ const routes: Routes = [
   { path: 'faq', component: FaqComponent },
   // { path: 'videos', component: VideosComponent },
   {path: 'videos', component: VideoListComponent},
+  { path: 'videoplayer', component: VideoplayerComponent },
   { path: '**', redirectTo: '' },
   
 ];
