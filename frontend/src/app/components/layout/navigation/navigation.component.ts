@@ -13,6 +13,7 @@ export class NavigationComponent {
     { path: '/blog', label: 'Blog' },
     { path: '/security', label: 'Security' },
     { path: '/faq', label: 'FAQ' },
-    { path: '/videos', label: 'Videos' }
+    { path: '/videos', label: 'Videos' },
+    { path: '/videoplayer', label: 'Videoplayer' }
   ];
 }

@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@types/core-js": "^2.5.8",
     "typescript": "^5.8.2"
   },
   "dependencies": {
@@ -8,6 +9,7 @@
     "@angular/forms": "^19.2.2",
     "@angular/platform-browser": "^19.2.2",
     "@angular/router": "^19.2.2",
+    "@videogular/ngx-videogular": "^10.0.1",
     "rxjs": "^7.8.2",
     "zone.js": "^0.15.0"
   }
