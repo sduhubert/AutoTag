@@ -12,6 +12,9 @@ services:
     build: ./backend
     ports:
       - "3000:3000"
+    volumes:
+      - ./backend/uploads:/app/uploads
+    user: "1000:1000"
     environment:
       - NODE_ENV=development
     depends_on:
@@ -37,3 +40,4 @@ services:
 
 volumes:
   db_data:
+
