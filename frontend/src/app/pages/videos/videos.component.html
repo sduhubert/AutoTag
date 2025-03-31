@@ -1,0 +1,33 @@
+<div class="videos-page">
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title">Tutorial Videos</h1>
+        <p class="page-subtitle">Learn how to make the most of Auto Tag</p>
+      </div>
+      
+      <div class="videos-grid">
+        <div class="video-card" *ngFor="let video of videos">
+          <div class="video-thumbnail" [ngClass]="video.thumbnailClass">
+            <div class="play-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </div>
+            <div class="video-duration">{{ video.duration }}</div>
+          </div>
+          <div class="video-content">
+            <h3 class="video-title">{{ video.title }}</h3>
+            <p class="video-description">{{ video.description }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="videos-footer">
+        <p>Need more guidance? Check out our comprehensive documentation or contact support.</p>
+        <div class="footer-buttons">
+          <button class="btn btn-primary">Documentation</button>
+          <button class="btn btn-secondary">Contact Support</button>
+        </div>
+      </div>
+    </div>
+  </div>

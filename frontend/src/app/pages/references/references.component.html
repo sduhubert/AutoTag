@@ -1,0 +1,25 @@
+<div class="references-page">
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title">References</h1>
+        <p class="page-subtitle">See what our clients are saying about Auto Tag</p>
+      </div>
+      
+      <div class="references-grid">
+        <div class="reference-card" *ngFor="let reference of references">
+          <div class="reference-content">
+            <p class="reference-quote">
+              "{{ reference.quote }}"
+            </p>
+            <div class="reference-author">
+              <div class="author-avatar"></div>
+              <div class="author-info">
+                <p class="author-name">{{ reference.position }}</p>
+                <p class="author-company">{{ reference.company }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

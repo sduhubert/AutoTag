@@ -1,0 +1,82 @@
+@import '../../../styles/variables';
+
+.security-page {
+  .page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    
+    .page-title {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .page-subtitle {
+      color: $text-medium;
+      font-size: 1.125rem;
+    }
+  }
+  
+  .security-intro {
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    text-align: center;
+    
+    p {
+      font-size: 1.125rem;
+      line-height: 1.6;
+      color: $text-medium;
+    }
+  }
+  
+  .security-features {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .security-card {
+    background-color: $white;
+    border-radius: $border-radius;
+    box-shadow: $shadow-sm;
+    padding: 1.5rem;
+    
+    .feature-title {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: $primary-color;
+    }
+    
+    .feature-description {
+      color: $text-medium;
+      line-height: 1.5;
+    }
+  }
+  
+  .security-contact {
+    background-color: $white;
+    border-radius: $border-radius;
+    box-shadow: $shadow-sm;
+    padding: 2rem;
+    text-align: center;
+    
+    .contact-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .contact-text {
+      color: $text-medium;
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+    }
+  }
+}

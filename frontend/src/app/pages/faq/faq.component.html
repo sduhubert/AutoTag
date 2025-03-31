@@ -1,0 +1,31 @@
+<div class="faq-page">
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title">Frequently Asked Questions</h1>
+        <p class="page-subtitle">Find answers to common questions about Auto Tag</p>
+      </div>
+      
+      <div class="faq-list">
+        <div class="faq-item" *ngFor="let item of faqItems">
+          <div class="faq-question" (click)="toggleFaq(item)">
+            <h3>{{ item.question }}</h3>
+            <div class="faq-toggle" [ngClass]="{'open': item.isOpen}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </div>
+          </div>
+          <div class="faq-answer" [ngClass]="{'open': item.isOpen}">
+            <p>{{ item.answer }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="faq-contact">
+        <h2>Still have questions?</h2>
+        <p>Our team is here to help. Contact us for more information.</p>
+        <button class="btn btn-secondary">Contact Support</button>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,96 @@
+@import '../../../../styles/variables';
+
+.header {
+  background-color: $white;
+  box-shadow: $shadow-sm;
+  
+  .container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    
+    &-icon {
+      position: relative;
+      margin-right: 0.75rem;
+      
+      .circle {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        
+        &.primary {
+          background-color: $primary-color;
+          position: relative;
+          z-index: 1;
+        }
+        
+        &.secondary {
+          background-color: $secondary-color;
+          position: absolute;
+          left: 1rem;
+          top: 0;
+        }
+      }
+    }
+    
+    &-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      
+      .primary {
+        color: $primary-color;
+      }
+      
+      .secondary {
+        color: $secondary-color;
+      }
+    }
+  }
+  
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    
+    .nav-link {
+      color: $text-medium;
+      font-weight: 500;
+      
+      &:hover {
+        color: $text-dark;
+      }
+    }
+    
+    .language-selector {
+      position: relative;
+      
+      .language-select {
+        appearance: none;
+        background: transparent;
+        border: none;
+        padding-right: 1.25rem;
+        font-weight: 500;
+        color: $text-medium;
+        cursor: pointer;
+      }
+      
+      .arrow-icon {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+      }
+    }
+  }
+}
