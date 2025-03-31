@@ -4,6 +4,27 @@
         <h1 class="page-title">Tutorial Videos</h1>
         <p class="page-subtitle">Learn how to make the most of Auto Tag</p>
       </div>
+
+      <div class="video-upload-section">
+        <h3>Upload New Video</h3>
+        <div class="upload-controls">
+          <input 
+            type="file" 
+            id="fileInput" 
+            (change)="onFileSelected($event)"
+            accept="video/*" 
+          />
+          <button (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
+        </div>
+        
+        <div *ngIf="message" class="upload-message" [class.error-message]="isError">
+          {{ message }}
+        </div>
+        
+        <div *ngIf="isUploading" class="upload-status">
+          Uploading video... Please wait.
+        </div>
+      </div>
       
       <div class="videos-grid">
         <div class="video-card" *ngFor="let video of videos">

@@ -22,6 +22,7 @@ import { BlogComponent } from './pages/blog/blog.component';
 import { SecurityComponent } from './pages/security/security.components';
 import { FaqComponent } from './pages/faq/faq.components';
 import { VideosComponent } from './pages/videos/videos.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
