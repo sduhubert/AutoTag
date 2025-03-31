@@ -6,7 +6,7 @@ import { Visitor } from '@angular/compiler';
 @Injectable({
   providedIn: 'root'
 })
-export class videoService {
+export class videoService {/*
   //Api Url to the backend 
   private apiUrl = "http://localhost:3003/videos";
 
@@ -15,5 +15,5 @@ export class videoService {
   //Method to get videos from the backend api
   getVideos(): Observable<Video[]>{
     return this.http.get<Video[]>(this.apiUrl);
-  }
+  }*/
 }
