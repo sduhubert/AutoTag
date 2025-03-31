@@ -16,9 +16,9 @@ export class VideoListComponent implements OnInit{
   
   constructor (private videoService: videoService){}
 
-  ngOnInit(): void {
+  ngOnInit(): void {/*
     this.videoService.getVideos().subscribe(data => {
       this.videos = data;
-    })
+    })*/
   }
 }
