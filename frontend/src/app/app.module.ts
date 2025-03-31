@@ -3,6 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { HttpClientModule } from '@angular/common/http';
+import { VideoplayerComponent } from './pages/videoplayer/videoplayer.component';
+//Modules
+import { videoModule } from './pages/auto-tag/auto-tag.module';
 
 // Layout Components
 import { HeaderComponent } from './components/layout/header/header.component';
@@ -39,7 +43,8 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     FormsModule,
     AppRoutingModule,
-    HttpClientModule
+    videoModule,
+    HttpClientModule 
   ],
   providers: [],
   bootstrap: [AppComponent]
