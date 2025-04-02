@@ -96,7 +96,7 @@ export class VideosComponent {
     const formData = new FormData();
     formData.append('file', this.selectedFile);
 
-    // Replace with your actual API endpoint
+    // Save the file to storage
     this.http.post('http://localhost:3000/api/upload', formData)
       .subscribe({
         next: (response: any) => {
@@ -111,6 +111,10 @@ export class VideosComponent {
             fileInput.value = '';
           }
           
+          // Also send the file to python backend
+          this.http.post('http://localhost:8001/upload-video', formData)
+            .subscribe(pythonResponse => console.log('Python response:', pythonResponse));
+
           // You could add logic here to refresh the videos list
           // or add the newly uploaded video to the list
         },
