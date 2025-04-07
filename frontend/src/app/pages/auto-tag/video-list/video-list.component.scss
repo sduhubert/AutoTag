@@ -54,6 +54,7 @@
       &.thumbnail-6 { background-color: lighten($secondary-color, 10%); }
       
       .play-button {
+        position: absolute;
         width: 4rem;
         height: 4rem;
         background-color: rgba($secondary-color, 0.8);

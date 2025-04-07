@@ -3,7 +3,7 @@ export class Video {
     title: string = "";
     description: string = "";
     duration: number = 0;
-    image_url: string = "";
-    tags: string[] = ['',''];
-    // video_url: string = "";
+    thumbnail: string = "Default.jpg";
+    // tags: string[] = ['',''];
+    video_url: string = "";
 }
