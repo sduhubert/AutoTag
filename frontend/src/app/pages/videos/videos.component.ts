@@ -97,7 +97,7 @@ export class VideosComponent {
     formData.append('file', this.selectedFile);
 
     // Save the file to storage
-    this.http.post('http://localhost:3000/api/upload', formData)
+    this.http.post('http://localhost:3000/api/video/upload', formData)
       .subscribe({
         next: (response: any) => {
           this.isUploading = false;
