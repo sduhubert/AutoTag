@@ -10,7 +10,11 @@
     "@angular/platform-browser": "^19.2.2",
     "@angular/router": "^19.2.2",
     "@videogular/ngx-videogular": "^10.0.1",
+    "dotenv": "^16.5.0",
+    "pg": "^8.14.1",
+    "pg-hstore": "^2.3.4",
     "rxjs": "^7.8.2",
+    "sequelize": "^6.37.7",
     "zone.js": "^0.15.0"
   }
 }

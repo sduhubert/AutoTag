@@ -8,24 +8,25 @@
       <div class="video-upload-section">
         <h3>Upload New Video</h3>
         <div class="upload-controls">
-          <input 
-            type="file" 
-            id="fileInput" 
+          <input
+            type="file"
+            id="fileInput"
+            title="Upload a video file"
             (change)="onFileSelected($event)"
-            accept="video/*" 
+            accept="video/*"
           />
           <button (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
         </div>
-        
+
         <div *ngIf="message" class="upload-message" [class.error-message]="isError">
           {{ message }}
         </div>
-        
+
         <div *ngIf="isUploading" class="upload-status">
           Uploading video... Please wait.
         </div>
       </div>
-      
+
       <div class="videos-grid">
         <div class="video-card" *ngFor="let video of videos">
           <div class="video-thumbnail" [ngClass]="video.thumbnailClass">
@@ -42,7 +43,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="videos-footer">
         <p>Need more guidance? Check out our comprehensive documentation or contact support.</p>
         <div class="footer-buttons">
