@@ -17,6 +17,11 @@ services:
     user: "1000:1000"
     environment:
       - NODE_ENV=development
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=database
+      - DB_NAME=autotag
+      - DB_PORT=5432
     depends_on:
       - database
 
