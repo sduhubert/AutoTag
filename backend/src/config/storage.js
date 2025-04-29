@@ -1,6 +1,7 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import pool from './database';
 
 const uploadDir = path.join(process.cwd(), 'uploads'); // Save to backend/uploads
 
