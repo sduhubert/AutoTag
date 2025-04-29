@@ -2,12 +2,12 @@ import { Component, importProvidersFrom, OnInit } from '@angular/core';
 import { videoModule } from '../auto-tag.module';
 import { videoService } from '../auto-tag.service';
 import { Video } from '../../../models/videos';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-video-list',
   standalone: true,
-  imports: [NgFor],
+  imports: [NgFor, NgIf],
   templateUrl: './video-list.component.html',
   styleUrl: './video-list.component.scss'
 })
@@ -70,7 +70,7 @@ export class VideoListComponent implements OnInit{
     formData.append('file', this.selectedFile);
 
     // Replace with your actual API endpoint
-    this.http.post('http://localhost:3000/api/upload', formData)
+    this.http.post('http://localhost:3000/api/video/upload', formData)
       .subscribe({
         next: (response: any) => {
           this.isUploading = false;
