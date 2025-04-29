@@ -70,9 +70,9 @@ INSERT INTO "admin" ("email", "username", "password") VALUES
 ('admin@gmail.com', 'admin', 'admin1');
 
 INSERT INTO "video" ("userid", "title", "filepath", "duration") VALUES
-(1, '5 Amazing Facts About Vivaldi ｜ History Brought To Life', 'assets/5 Amazing Facts About Vivaldi ｜ History Brought To Life.mp4', '00:01:46'),
-(2, 'Learn Italian with Luca!', 'assets/[Pixar] Learn Italian with Luca! Pixar.mov', '00:02:47'),
-(1, 'Meet Vivaldi ｜ Composer Biography for Kids.mp3', 'assets/Meet Vivaldi ｜ Composer Biography for Kids.mp3', '00:06:32');
+(1, '5 Amazing Facts About Vivaldi ｜ History Brought To Life', 'uploads/5 Amazing Facts About Vivaldi ｜ History Brought To Life.mp4', '00:01:46'),
+(2, 'Learn Italian with Luca!', 'uploads/[Pixar] Learn Italian with Luca! Pixar.mov', '00:02:47'),
+(1, 'Meet Vivaldi ｜ Composer Biography for Kids.mp3', 'uploads/Meet Vivaldi ｜ Composer Biography for Kids.mp3', '00:06:32');
 
 INSERT INTO "tag" ("name") VALUES 
 ('Education'),
