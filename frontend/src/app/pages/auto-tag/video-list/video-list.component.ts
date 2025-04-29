@@ -20,6 +20,7 @@ export class VideoListComponent implements OnInit{
   ngOnInit(): void {
     this.videoService.getVideos().subscribe(data => {
       this.videos = data;
+      console.log(this.videos);
     })
   }
 

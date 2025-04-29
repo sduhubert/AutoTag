@@ -22,7 +22,7 @@
     <video [vgMedia]="$any(media)"
             #media id = "singleVideo"
             preload="auto"
-            src="assets/{{CurrentVideo.video_url}}"
+            src="{{CurrentVideo.filepath}}"
             crossorigin>
     </video>
     </vg-player>

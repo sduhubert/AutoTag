@@ -32,12 +32,13 @@ export class VideoplayerComponent {
   api: VgApiService = new VgApiService;
   currentVideoId: number = 0;
   CurrentVideo: Video = {
-    id : 0,
+    videoid : 0,
+    userid: 0,
     title: '',
     description: '',
-    duration: 0,
+    // duration: 0,
     thumbnail: '',
-    video_url: ''
+    filepath: ''
   };
 
   //Autoplay on page load
@@ -67,6 +68,7 @@ export class VideoplayerComponent {
   LoadVideoById(id: number) {
     return this.autoTagService.getVideoById(id).subscribe(data => {
       this.CurrentVideo = data;
+      console.log(this.CurrentVideo);
     })
   }
 

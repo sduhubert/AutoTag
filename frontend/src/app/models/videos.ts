@@ -1,9 +1,14 @@
 export class Video {
-    id: number = 0;
+    videoid: number = 0;
+    userid: number = 0; 
     title: string = "";
+    filepath: string = "";
     description: string = "";
-    duration: number = 0;
+    // duration: {
+    //     minutes: number = 0;
+    //     seconds: number = 0;
+    // };
     thumbnail: string = "Default.jpg";
     // tags: string[] = ['',''];
-    video_url: string = "";
+    
 }
