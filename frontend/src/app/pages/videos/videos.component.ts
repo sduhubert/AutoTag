@@ -59,6 +59,7 @@ export class VideosComponent {
       thumbnailClass: 'thumbnail-6'
     }
   ];
+
   selectedFile: File | null = null;
   isUploading = false;
   message = '';

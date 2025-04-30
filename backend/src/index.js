@@ -8,8 +8,14 @@ import tagRoutes from './routes/tag.routes.js';
 import summaryRoutes from './routes/summary.routes.js';
 import languageRoutes from './routes/language.routes.js';
 import videoMetaRoutes from './routes/videoMeta.routes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';  
 
 dotenv.config();
+
+// const path to the uploads folder
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
@@ -27,6 +33,11 @@ app.use('/api/tags', tagRoutes);
 app.use('/api/summaries', summaryRoutes);
 app.use('/api/languages', languageRoutes);
 app.use('/api/video-meta', videoMetaRoutes);
+
+//exposing uploads folder 
+const uploadsPath = path.join(__dirname, '..', 'uploads');
+app.use('/uploads',express.static(uploadsPath));
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

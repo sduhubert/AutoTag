@@ -54,6 +54,7 @@
       &.thumbnail-6 { background-color: lighten($secondary-color, 10%); }
       
       .play-button {
+        position: absolute;
         width: 4rem;
         height: 4rem;
         background-color: rgba($secondary-color, 0.8);
@@ -124,4 +125,40 @@
       }
     }
   }
+
+  .video-upload-section {
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
+  
+  .upload-controls {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    
+    button {
+      margin-left: 10px;
+      padding: 6px 12px;
+    }
+  }
+  
+  //Video upload section
+  .upload-message {
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 4px;
+  }
+  
+  .error-message {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+  
+  .upload-status {
+    margin-top: 10px;
+    font-style: italic;
+  }
+
 }

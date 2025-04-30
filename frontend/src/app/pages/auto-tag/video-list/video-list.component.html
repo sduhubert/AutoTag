@@ -4,16 +4,37 @@
       <h1 class="page-title">Tutorial Videos</h1>
       <p class="page-subtitle">Learn how to make the most of Auto Tag</p>
     </div>
+    <div class="video-upload-section">
+      <h3>Upload New Video</h3>
+      <div class="upload-controls">
+        <input 
+          type="file" 
+          id="fileInput" 
+          (change)="onFileSelected($event)"
+          accept="video/*" 
+        />
+        <button (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
+      </div>
+      
+      <div *ngIf="message" class="upload-message" [class.error-message]="isError">
+        {{ message }}
+      </div>
+      
+      <div *ngIf="isUploading" class="upload-status">
+        Uploading video... Please wait.
+      </div>
+    </div>
     
     <div class="videos-grid">
       <div class="video-card" *ngFor="let video of videos">
-        <div class="video-thumbnail" img="video.image_url">
-          <div class="play-button">
+        <div class="video-thumbnail">
+          <img class="video-thumbnail" src="assets/img/{{video.thumbnail}}">
+          <div class="play-button" (click)="playVideo(video.videoid)">
             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
           </div>
-          <div class="video-duration">{{video.duration}}</div>
+          <!-- <div class="video-duration">{{video.duration}}</div> -->
         </div>
         <div class="video-content">
           <h3 class="video-title">{{ video.title }}</h3>

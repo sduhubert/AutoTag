@@ -22,9 +22,9 @@ const routes: Routes = [
   { path: 'blog', component: BlogComponent },
   { path: 'security', component: SecurityComponent },
   { path: 'faq', component: FaqComponent },
-  { path: 'videos', component: VideosComponent },
-  //{path: 'videos', component: VideoListComponent},
-  { path: 'videoplayer', component: VideoplayerComponent },
+  // { path: 'videos', component: VideosComponent },
+  {path: 'videos', component: VideoListComponent},
+  { path: 'videoplayer/:id', component: VideoplayerComponent },
   { path: '**', redirectTo: '' },
   
 ];
