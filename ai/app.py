@@ -6,6 +6,7 @@ import whisper
 import re
 from collections import Counter
 from flask_cors import CORS
+from transformers import pipeline
 
 app = Flask(__name__)
 CORS(app)
@@ -79,12 +80,24 @@ def upload_video():
 
         # Create a simple summary (first few sentences as a preview)
         sentences = re.split(r'[.!?]+', transcript)
-        # Take about 20% of the sentences or at least 3 sentences
-        summary_length = max(3, int(len(sentences) * 0.2))
-        short_summary = '. '.join(sentences[:summary_length]) + '.'
+        # # Take about 20% of the sentences or at least 3 sentences
+        # summary_length = max(3, int(len(sentences) * 0.2))
+        # short_summary = '. '.join(sentences[:summary_length]) + '.'
 
         detailed_summary_length = max(5, int(len(sentences) * 0.3))
         detailed_summary = '. '.join(sentences[:detailed_summary_length]) + '.'
+
+        # -- BART summarization logic --
+
+        # Load the BART model for summarization
+        summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+
+        # Generate the summary  
+        short_summary_result = summarizer(transcript, max_length=130, min_length=30, do_sample=False)
+        short_summary = short_summary_result[0]['summary_text']
+        
+        # Print the short summary
+        print("Short summary:", short_summary)
 
         return jsonify({
             "tags": tags,
