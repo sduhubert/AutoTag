@@ -1,5 +1,5 @@
 <div class="container" style="width: 800px;">
-    <h2>Title of the video</h2>
+    <h2>{{CurrentVideo.title}}</h2>
     <vg-player (onPlayerReady)="onPlayerReady($event)">
         <vg-overlay-play></vg-overlay-play>
     <vg-buffering vgFor="singleVideo"></vg-buffering>
@@ -22,13 +22,13 @@
     <video [vgMedia]="$any(media)"
             #media id = "singleVideo"
             preload="auto"
-            src="assets/5 Amazing Facts About Vivaldi ｜ History Brought To Life.mp4"
+            src="http://localhost:3000/{{CurrentVideo.filepath}}"
             crossorigin>
     </video>
     </vg-player>
     <div class="description">
         <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem magnam vitae ipsa ipsam fugiat a error aut ab impedit voluptates non consequuntur animi labore consequatur sequi, aperiam id eligendi dolores?
+            {{CurrentVideo.description}}
         </p>
     </div>
 </div>
