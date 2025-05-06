@@ -1,4 +1,5 @@
 FROM python:3.13
+RUN mkdir -p /uploads_shared && chmod -R 777 /uploads_shared
 RUN apt-get update && apt-get install -y \
     cmake \
     g++ \

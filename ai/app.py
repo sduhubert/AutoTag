@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Folders for uploads and processed audio
-UPLOAD_FOLDER = "./uploads"
+UPLOAD_FOLDER = "/uploads_shared"
 PROCESSED_FOLDER = "./processed"
 TRANSCRIPTS_FOLDER ="./transcripts"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -102,8 +102,7 @@ def upload_video():
         return jsonify({
             "tags": tags,
             "transcript": transcript,
-            "shortSummary": short_summary,
-            "detailedSummary": detailed_summary
+            "shortSummary": short_summary
         })
 
     except Exception as e:
