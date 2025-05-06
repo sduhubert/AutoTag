@@ -111,9 +111,13 @@ export class VideosComponent {
             fileInput.value = '';
           }
           
+          /*
+          // PYTHON REQUEST WAS MOVED TO BACKEND!
+
           // Also send the file to python backend
           this.http.post('http://localhost:8001/upload-video', formData)
             .subscribe(pythonResponse => console.log('Python response:', pythonResponse));
+          */
 
           // You could add logic here to refresh the videos list
           // or add the newly uploaded video to the list

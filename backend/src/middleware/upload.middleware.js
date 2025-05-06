@@ -4,7 +4,7 @@ import path from 'path';
 // Configure storage destination and filename
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, '/app/uploads_local');
     },
     filename: (req, file, cb) => {
         cb(null, `${file.originalname}`);
