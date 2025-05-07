@@ -16,6 +16,7 @@ export default function setupAssociations(db) {
     through: VideoTag,
     foreignKey: 'videoid',
     otherKey: 'tagid',
+    as: 'tags',
   });
   Tag.belongsToMany(Video, {
     through: VideoTag,

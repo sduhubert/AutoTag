@@ -5,16 +5,28 @@ import ffmpeg from 'fluent-ffmpeg';
 import axios from 'axios';
 import fs from 'fs';
 import FormData from 'form-data';
+import { publicDecrypt } from 'crypto';
+import VideoService from '../services/video.service.js';
 
-//get all videos
-export const getVideos = async (req, res) => { // GET - api/video
-    try {
-        const videos = await Video.findAll();
-        res.status(200).json({ videos });
-    } catch (err) {
-        res.status(500).json({ error: 'Failed to fetch videos' });
-    }
-};
+// //get all videos
+// export const getVideos = async (req, res) => { // GET - api/video
+//     try {
+//         const videos = await Video.findAll();
+//         res.status(200).json({ videos });
+//     } catch (err) {
+//         res.status(500).json({ error: 'Failed to fetch videos' });
+//     }
+// };
+
+export const getVideos = async(req, res) => {
+  try {
+    const videos = await VideoService.getVideos();
+    res.json(videos);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch videos' });
+  }
+}
+
 
 //(create a new video) - upload video file
 export const uploadFile = async (req, res) => {
