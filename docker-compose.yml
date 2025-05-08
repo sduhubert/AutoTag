@@ -13,8 +13,9 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./backend/uploads:/app/uploads
-    user: "1000:1000"
+      - ./backend/uploads:/app/uploads_local
+      - video_data:/app/uploads_shared
+    user: root
     environment:
       - NODE_ENV=development
       - DB_USER=postgres
@@ -29,6 +30,9 @@ services:
     build: ./ai
     ports:
       - "8001:8001"
+    volumes:
+      - video_data:/app/uploads_shared
+    user: root
 
   database:
     image: postgres:15
@@ -45,4 +49,5 @@ services:
 
 volumes:
   db_data:
+  video_data:
 

@@ -1,6 +1,11 @@
 FROM node:18
 # set working directory
 WORKDIR /app
+
+# install ffmpeg
+USER root
+RUN apt-get update && apt-get install -y ffmpeg
+
 # copy package files and install dependencies 
 COPY package.json package-lock.json ./
 RUN npm install

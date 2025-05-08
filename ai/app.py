@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Folders for uploads and processed audio
-UPLOAD_FOLDER = "./uploads"
+UPLOAD_FOLDER = "/uploads_shared"
 PROCESSED_FOLDER = "./processed"
 TRANSCRIPTS_FOLDER ="./transcripts"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
