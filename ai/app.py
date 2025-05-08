@@ -73,9 +73,9 @@ def upload_video():
         # stop removes common stop words such as "and" "the" etc
         # top_n limits result to a specific amout of relevant keywords/prases 
         keywords = kw_model.extract_keywords(transcript, 
-                                             keyphrase_ngram_range=(1, 2), 
+                                             keyphrase_ngram_range=(1, 1), 
                                              stop_words='english', 
-                                             top_n=10)
+                                             top_n=5)
         
         # Only extracts the keyword strings from the tuples returned by KeyBert
         # Each item in 'keywords' is a tuple like ('keyword', score)
