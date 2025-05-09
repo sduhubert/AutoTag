@@ -20,28 +20,28 @@ export const getVideos = async(req, res) => {
 }
 
 
-// // Get video by ID
-// export const getVideoById = async (req, res) => { //GET /api/video/:id
-//   try {
-//     const video = await Video.findByPk(req.params.id);
-//     if (!video) return res.status(404).json({ error: 'Video not found' });
-//     res.status(200).json({ video });
-//   } catch (err) {
-//     res.status(500).json({ error: 'Failed to fetch video' });
-//   }
-// };
-
-export const getVideoById = async(req, res) => {
+// Get video by ID
+export const getVideoById = async (req, res) => { //GET /api/video/:id
   try {
-    const videoId = parseInt(req.params.id,10);
-    console.log(videoId);
-    if(!videoId) return res.status(404).json({ error: 'Video id not found' });
-    const video = await VideoService.getVideoById(videoId);
-    res.json(video);
+    const video = await Video.findByPk(req.params.id);
+    if (!video) return res.status(404).json({ error: 'Video not found' });
+    res.status(200).json({ video });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch video' });
   }
-}
+};
+
+// export const getVideoById = async(req, res) => {
+//   try {
+//     const videoId = parseInt(req.params.id,10);
+//     console.log(videoId);
+//     if(!videoId) return res.status(404).json({ error: 'Video id not found' });
+//     const video = await VideoService.getVideoById(videoId);
+//     res.json(video);
+//   } catch (err) {
+//     res.status(500).json({ error: 'Failed to fetch video' });
+//   }
+// }
 
 //(create a new video) - upload video file
 export const uploadFile = async (req, res) => {
