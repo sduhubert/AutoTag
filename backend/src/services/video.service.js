@@ -8,11 +8,20 @@ class VideoService {
     static async getVideos() {
         try {
             const videos = await db.Video.findAll({
-                include: {
+                include: [
+                    {
                     model: db.Tag,
                     as: 'tags',
                     attributes: ['name']
-                }
+                    },
+                    {
+                        model: db.VideoSummary,
+                        as: 'video_summary',
+                        attributes: ['summary']
+                    },
+                
+                
+                ]
             });
             return videos;
         } catch (err) {
