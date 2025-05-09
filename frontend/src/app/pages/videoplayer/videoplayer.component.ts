@@ -37,8 +37,8 @@ export class VideoplayerComponent {
     title: '',
     description: '',
     // duration: 0,
-    thumbnail: '',
-    filepath: ''
+    filepath: '',
+    tags: []
   };
 
   //Autoplay on page load

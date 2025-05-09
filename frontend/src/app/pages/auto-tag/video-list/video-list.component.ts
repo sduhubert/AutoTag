@@ -19,8 +19,11 @@ export class VideoListComponent implements OnInit{
 
   ngOnInit(): void {
     this.videoService.getVideos().subscribe(data => {
+      
+      console.log( "directly loaded videos",data);
+    
       this.videos = data;
-      console.log(this.videos);
+      console.log( "videos in the videos list",this.videos);
     })
   }
 
