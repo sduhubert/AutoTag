@@ -19,8 +19,6 @@ class VideoService {
                         as: 'video_summary',
                         attributes: ['summary']
                     },
-                
-                
                 ]
             });
             return videos;
@@ -28,6 +26,23 @@ class VideoService {
             console.error(err);
             throw err;
         }
+    }
+
+    static async getVideoById(id) {
+        console.log(id);
+        try {
+            const video = await db.Video.findOne({ where: { videoid: id }, include: [
+                {
+                    model: db.VideoSummary,
+                    as: 'video_summary',
+                    attributes: ['summary']
+                },
+            ] });
+              return video;  
+        }  catch (error) {
+            console.error("Error fetching videos by ID", error);
+            throw error;
+          }
     }
 }
 

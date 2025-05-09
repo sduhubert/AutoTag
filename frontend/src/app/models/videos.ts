@@ -10,5 +10,5 @@ export class Video {
     // };
     // thumbnail: string = "Default.jpg";
     tags: { name: string; VideoTag: any }[] = [];
-    
+    video_summary: { summary: string;} = { summary: ""};
 }
