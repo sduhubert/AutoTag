@@ -16,6 +16,7 @@ export default function setupAssociations(db) {
     through: VideoTag,
     foreignKey: 'videoid',
     otherKey: 'tagid',
+    as: 'tags',
   });
   Tag.belongsToMany(Video, {
     through: VideoTag,
@@ -26,7 +27,7 @@ export default function setupAssociations(db) {
   VideoTag.belongsTo(Video, { foreignKey: 'videoid' });
   VideoTag.belongsTo(Tag, { foreignKey: 'tagid' });
 
-  Video.hasOne(VideoSummary, { foreignKey: 'videoid' });
+  Video.hasOne(VideoSummary, { foreignKey: 'videoid', as: 'video_summary' });
   VideoSummary.belongsTo(Video, { foreignKey: 'videoid' });
 
   Video.belongsToMany(Language, {

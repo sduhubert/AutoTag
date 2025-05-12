@@ -13,9 +13,18 @@ export class videoService {
   constructor(private http: HttpClient) { }
   
   //Method to get videos from the backend api
-  getVideos(): Observable<Video[]>{
-    return this.http.get<{ videos: Video[] }>(this.apiUrl).pipe(
-      map(response => response.videos)
+  getVideos(): Observable<Video[]> {
+    return this.http.get<Video[]>(this.apiUrl).pipe(
+      map(videos => 
+        videos.map(video => {
+          // Ensure we map tags properly and keep VideoTag object
+          video.tags = video.tags.map(tag => ({
+            name: tag.name,           // Extract the name
+            VideoTag: tag.VideoTag    // Keep the VideoTag object
+          }));
+          return video;
+        })
+      )
     );
   }
 
