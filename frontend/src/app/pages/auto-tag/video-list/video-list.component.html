@@ -46,8 +46,12 @@
           <div>
             <h4>Summary:</h4>
             <p>{{video.video_summary.summary}}</p>
-          </div>
-          
+            <div class="button-panel">
+              <button (click)="deleteVideo(video.videoid)" class="button-delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>  
         </div>
       </div>
     </div>

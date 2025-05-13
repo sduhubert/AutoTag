@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, map, throwError } from 'rxjs';
 import { Video } from '../../models/videos';
 import { Visitor } from '@angular/compiler';
 @Injectable({
@@ -32,6 +32,16 @@ export class videoService {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<{video: Video}>(url).pipe(
       map(response => response.video)
+    );
+  }
+
+  deleteVideo(id: number): Observable<void> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.delete<void>(url).pipe(
+      catchError(error => {
+        console.error('Delete failed', error);
+        return throwError(() => new Error('Failed to delete video'));
+      })
     );
   }
 }

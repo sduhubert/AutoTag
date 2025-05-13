@@ -4,10 +4,11 @@ import { videoService } from '../auto-tag.service';
 import { Video } from '../../../models/videos';
 import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-video-list',
   standalone: true,
-  imports: [NgFor, NgIf],
+  imports: [NgFor, NgIf, MatIconModule],
   templateUrl: './video-list.component.html',
   styleUrl: './video-list.component.scss'
 })
@@ -97,5 +98,27 @@ export class VideoListComponent implements OnInit{
           console.error('Upload error:', error);
         }
       });
+  }
+
+  // Variable that is used for the loading circle in the UI
+  deleteInProgress = false;
+
+  deleteVideo(id: number): void {
+    this.deleteInProgress = true;
+
+    this.videoService.deleteVideo(id).subscribe({
+      next: () => {
+        // Reload the videos list
+        this.videoService.getVideos().subscribe(data => {
+          this.videos = data;
+        })
+      },
+      error: (error) => {
+        console.error('Error deleting video:', error);
+      },
+      complete: () => {
+        this.deleteInProgress = false;
+      }
+    });
   }
 }
