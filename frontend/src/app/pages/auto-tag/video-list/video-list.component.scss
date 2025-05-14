@@ -161,4 +161,35 @@
     font-style: italic;
   }
 
+  .button-panel {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .button-delete {
+    background-color: #e0e0e0; /* light grey */
+    border: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .button-delete:hover {
+    background-color: #cfcfcf; /* darker on hover */
+  }
+
+  .button-delete:active {
+    background-color: #b0b0b0; /* even darker on click */
+  }
+
+  .button-delete mat-icon {
+    color: #333;
+  }
+
+
 }

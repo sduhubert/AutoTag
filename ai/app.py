@@ -106,18 +106,6 @@ def upload_video():
             "tags": tags, # Extracted using KeyBERT based on transcript content
             "transcript": transcript,
             "shortSummary": short_summary, # Generated using BART summarization model
-            "detailedSummary": detailed_summary,
-            "video": {
-                "id": int(time.time()),  # or use uuid if needed
-                "title": "Uploaded Video",
-                "description": "description",
-                "duration": "unknown",  # If you extract duration, replace this
-                "thumbnailClass": "default-thumbnail",
-                "tags": tags,
-                "shortSummary": short_summary,
-                "detailedSummary": detailed_summary,
-                "transcript": transcript
-            }
         })
 
     except Exception as e:
