@@ -54,10 +54,31 @@ export const uploadFile = async (req, res) => {
     const { originalname, path: filePath } = req.file;
     const extension = path.extname(originalname);
 
+     
     // Copy file to shared folder
     const sharedUploadPath = '/app/uploads_shared';
     const sharedFilePath = path.join(sharedUploadPath, originalname);
     await fs.promises.copyFile(filePath, sharedFilePath);
+
+    //Copy thumbnail into shared folder thumbnails.
+    const thumbnailFilename = path.basename(originalname, extension) + '.png';
+    const thumbnailFolder = '/app/uploads_shared/thumbnails';
+    const thumbnailPath = path.join(thumbnailFolder, thumbnailFilename);
+    await fs.promises.mkdir(thumbnailFolder, { recursive: true });
+
+    //Take a screenshot from the video
+    await new Promise((resolve, reject) => {
+      ffmpeg(sharedFilePath)
+      .screenshots({
+        count: 1, 
+       timemarks: ['00:00:01.000'], 
+        filename: thumbnailFilename, 
+        folder: thumbnailFolder, 
+        size: '320x240' 
+      })
+    .on('end', resolve) 
+    .on('error', reject);
+    });
 
     // After successful copy, delete the original file
     await fs.promises.unlink(filePath);
@@ -99,7 +120,8 @@ export const uploadFile = async (req, res) => {
             title: originalname,
             filepath: sharedFilePath,
             duration: duration,
-            uploaded_at: new Date() // Add upload timestamp
+            uploaded_at: new Date(), // Add upload timestamp
+            thumbnail: thumbnailPath
           }, { transaction: t });
 
           // Process tags through junction table
@@ -129,9 +151,10 @@ export const uploadFile = async (req, res) => {
         res.status(200).json({
           message: 'File uploaded and metadata stored.',
           video: result.newVideo,
+          thumbnailPath,
           transcript,
           tags,
-          shortSummary
+          shortSummary,
         });
 
       } catch (dbErr) {

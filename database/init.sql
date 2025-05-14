@@ -21,6 +21,7 @@ CREATE TABLE "video" (
     "filepath" VARCHAR(255) NOT NULL, -- stores path ("frontend/assets/video...")
     "duration" INTERVAL NOT NULL, -- Duration in HH:MM:SS format
     "uploaded_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "thumbnail" VARCHAR(255),
     FOREIGN KEY ("userid") REFERENCES "user"("userid")
     -- video stays even if user is deleted
 );
