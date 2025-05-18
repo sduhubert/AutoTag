@@ -9,6 +9,7 @@ from collections import Counter
 from flask_cors import CORS
 from transformers import pipeline
 from keybert import KeyBERT
+from transformers import pipeline, AutoTokenizer
 
 app = Flask(__name__)
 CORS(app)
@@ -26,6 +27,11 @@ os.makedirs(TRANSCRIPTS_FOLDER, exist_ok=True)
 whisper_model = whisper.load_model("base")
 #using a pre-trained BERT embedding model. (Strong and lightweight alternative to using BERT directly for token extraction)
 kw_model = KeyBERT("distilbert-base-nli-mean-tokens")
+bart_tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
+# At top of your file, after imports and model init:
+tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/distilbert-base-nli-mean-tokens")
+bart_model = "facebook/bart-large-cnn"
+summarizer = pipeline("summarization", model=bart_model, tokenizer=bart_tokenizer)
 
 # All-in-one - video to mp3, then mp3 to text, then summary/tags
 @app.route("/upload-video", methods=["POST"])
@@ -53,63 +59,147 @@ def upload_video():
         # Deletes the video after it's converted
         os.remove(video_path)
 
-    # Transcription, tag generation
+    # Use Whisper to transcribe audio
+    result = whisper_model.transcribe(audio_path)
+    transcript = result["text"]
+
+    # Save transcript to file
+    transcript_filename = audio_filename.rsplit('.', 1)[0] + '.txt'
+    transcript_path = os.path.join(TRANSCRIPTS_FOLDER, transcript_filename)
+    with open(transcript_path, 'w') as f:
+        f.write(transcript)
+
+
+    # -- Generate tags with BERT --
+
+    def chunk_text_token_aware(text, tokenizer, max_tokens=400, overlap=50):
+        words = text.split()
+        chunks = []
+        i = 0
+        while i < len(words):
+            chunk_words = []
+            while i < len(words):
+                chunk_words.append(words[i])
+                tokens = tokenizer.tokenize(" ".join(chunk_words))
+                if len(tokens) > max_tokens:
+                    chunk_words.pop()
+                    break
+                i += 1
+            if not chunk_words:
+                chunk_words.append(words[i])
+                i += 1
+            chunks.append(" ".join(chunk_words))
+            prev_i = i
+            i = max(i - overlap, 0)
+            if i <= prev_i:
+                break  # Prevent infinite loop if no forward progress
+        return chunks
+
+    # For tags, smaller chunks (~400 tokens)
+    chunks_for_tags = chunk_text_token_aware(transcript, tokenizer, max_tokens=400, overlap=50)
+
+    def extract_tags_from_transcript(transcript, kw_model, top_n_per_chunk=5, final_top_n=10):
+        all_keywords = []
+
+        chunks = chunks_for_tags
+
+        for idx, chunk in enumerate(chunks):
+            tokens = tokenizer.tokenize(chunk)
+            print(f"Chunk {idx} length in tokens: {len(tokens)}")
+
+                            
+            print(f"Processing chunk with {len(chunk.split())} words")
+            keywords = kw_model.extract_keywords(
+                chunk,
+                keyphrase_ngram_range=(1, 1),
+                stop_words='english',
+                top_n=top_n_per_chunk
+            )
+            all_keywords.extend(keywords)
+
+        # Merge duplicates keeping highest score
+        unique_tags = {}
+        for kw, score in all_keywords:
+            if kw not in unique_tags or score > unique_tags[kw]:
+                unique_tags[kw] = score
+
+        # Sort by score and select top tags
+        sorted_tags = sorted(unique_tags.items(), key=lambda x: x[1], reverse=True)[:final_top_n]
+
+        # Return only the keywords
+        tags = [kw for kw, score in sorted_tags]
+        return tags
+
     try:
-        # Use Whisper to transcribe audio
-        result = whisper_model.transcribe(audio_path)
-        transcript = result["text"]
-
-        # Save transcript to file
-        transcript_filename = audio_filename.rsplit('.', 1)[0] + '.txt'
-        transcript_path = os.path.join(TRANSCRIPTS_FOLDER, transcript_filename)
-        with open(transcript_path, 'w') as f:
-            f.write(transcript)
-
-        # -- Generate tags with BERT --
+        tags = extract_tags_from_transcript(transcript, kw_model)
+    except Exception as e:
+        print("Error in tag extraction:", e)
+        return jsonify({"error": "Tag extraction failed", "details": str(e)}), 500    
 
 
-        # A basic placeholder to replace with BERT-based logic
-        # keyphrase allows both single words and two-word phrases
-        # stop removes common stop words such as "and" "the" etc
-        # top_n limits result to a specific amout of relevant keywords/prases 
-        keywords = kw_model.extract_keywords(transcript, 
-                                             keyphrase_ngram_range=(1, 1), 
-                                             stop_words='english', 
-                                             top_n=5)
-        
-        # Only extracts the keyword strings from the tuples returned by KeyBert
-        # Each item in 'keywords' is a tuple like ('keyword', score)
-        tags = [kw[0] for kw in keywords]
+    # -- Summary --
+ 
+    
+    def chunk_text_for_summary(text, tokenizer, max_tokens=1000):
+        words = text.split()
+        chunks = []
+        i = 0
+        while i < len(words):
+            chunk_words = []
+            while i < len(words):
+                chunk_words.append(words[i])
+                tokens = tokenizer.tokenize(" ".join(chunk_words))
+                if len(tokens) > max_tokens:
+                    chunk_words.pop()
+                    break
+                i += 1
+            chunks.append(" ".join(chunk_words))
+        return chunks
 
-        # Create a simple summary (first few sentences as a preview)
-        sentences = re.split(r'[.!?]+', transcript)
-        # # Take about 20% of the sentences or at least 3 sentences
-        # summary_length = max(3, int(len(sentences) * 0.2))
-        # short_summary = '. '.join(sentences[:summary_length]) + '.'
+ 
+    # Check if transcript is empty or None
+    if not transcript or not transcript.strip():
+        return jsonify({"error": "Transcript is empty, cannot summarize"}), 400
 
-        detailed_summary_length = max(5, int(len(sentences) * 0.3))
-        detailed_summary = '. '.join(sentences[:detailed_summary_length]) + '.'
+    try:
+        # Tokenize with truncation just to verify input size (optional check)
+        tokenized_input = bart_tokenizer(transcript, return_tensors="pt", truncation=True, max_length=1024)
+        if tokenized_input["input_ids"].shape[1] == 0:
+            return jsonify({"error": "Tokenized input is empty, cannot summarize"}), 400
 
-        # -- BART summarization logic --
+        print(f"Tokens in input: {tokenized_input['input_ids'].shape[1]}")
 
-        # Load the BART model for summarization
-        summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+        summary_chunks = chunk_text_for_summary(transcript, bart_tokenizer, max_tokens=1000)
+        all_summaries = []
 
-        # Generate the summary  
-        short_summary_result = summarizer(transcript, max_length=130, min_length=30, do_sample=False)
-        short_summary = short_summary_result[0]['summary_text']
-        
-        # Print the short summary
-        print("Short summary:", short_summary)
+        for chunk in summary_chunks:
+            if chunk.strip():  # skip empty chunks
+                summary_result = summarizer(
+                    chunk,
+                    max_length=130,
+                    min_length=30,
+                    do_sample=False
+                )
+                all_summaries.append(summary_result[0]['summary_text'])
 
-        return jsonify({
-            "tags": tags, # Extracted using KeyBERT based on transcript content
-            "transcript": transcript,
-            "shortSummary": short_summary, # Generated using BART summarization model
-        })
+        # chunk summaries joined into a final summary string:
+        final_summary = " ".join(all_summaries)
+
+
 
     except Exception as e:
-        return jsonify({"error": "Transcription or summarization failed", "details": str(e)}), 500
+        print("Error in summarization:", e)
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": "Summarization failed", "details": str(e)}), 500
+
+    print("Short summary:", final_summary)
+
+    return jsonify({
+        "tags": tags,           # Your extracted tags
+        "transcript": transcript,
+        "shortSummary": final_summary,
+    })
 
 
 if __name__ == "__main__":
