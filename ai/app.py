@@ -4,9 +4,11 @@ from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 import whisper
 import re
+import time
 from collections import Counter
 from flask_cors import CORS
 from transformers import pipeline
+from keybert import KeyBERT
 
 app = Flask(__name__)
 CORS(app)
@@ -20,7 +22,10 @@ os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 os.makedirs(TRANSCRIPTS_FOLDER, exist_ok=True)
 
 # We can change the size of the whisper model: tiny, base, small, medium, large.
+#load models
 whisper_model = whisper.load_model("base")
+#using a pre-trained BERT embedding model. (Strong and lightweight alternative to using BERT directly for token extraction)
+kw_model = KeyBERT("distilbert-base-nli-mean-tokens")
 
 # All-in-one - video to mp3, then mp3 to text, then summary/tags
 @app.route("/upload-video", methods=["POST"])
@@ -48,11 +53,19 @@ def upload_video():
         # Deletes the video after it's converted
         os.remove(video_path)
 
+    # Check if the audio file was created
+    if not os.path.exists(audio_path):
+        return jsonify({"error": "Audio conversion failed"}), 500
+
     # Transcription, tag generation
     try:
         # Use Whisper to transcribe audio
         result = whisper_model.transcribe(audio_path)
         transcript = result["text"]
+
+        # Check if the transcript is empty
+        if not transcript.strip():
+            return jsonify({"error": "Transcription failed, no text detected"}), 500
 
         # Save transcript to file
         transcript_filename = audio_filename.rsplit('.', 1)[0] + '.txt'
@@ -60,23 +73,21 @@ def upload_video():
         with open(transcript_path, 'w') as f:
             f.write(transcript)
 
-        # Generate tags from transcript
-        # Remove punctuation and convert to lowercase
-        cleaned_text = re.sub(r'[^\w\s]', '', transcript.lower())
-        words = cleaned_text.split()
+        # -- Generate tags with BERT --
 
-        # Filter out common stop words and keep only words with length > 3
-        stop_words = {'the', 'and', 'for', 'that', 'this', 'with', 'you', 'have', 
-                      'from', 'are', 'they', 'will', 'what', 'when', 'where', 'how',
-                      'why', 'who', 'which', 'there', 'here', 'their', 'your', 'our'}
 
-        filtered_words = [word for word in words if len(word) > 3 and word not in stop_words]
-
-        # Count frequency of words
-        word_counts = Counter(filtered_words)
-
-        # Get the 5 most common words as tags
-        tags = [word for word, _ in word_counts.most_common(5)]
+        # A basic placeholder to replace with BERT-based logic
+        # keyphrase allows both single words and two-word phrases
+        # stop removes common stop words such as "and" "the" etc
+        # top_n limits result to a specific amout of relevant keywords/prases 
+        keywords = kw_model.extract_keywords(transcript, 
+                                             keyphrase_ngram_range=(1, 1), 
+                                             stop_words='english', 
+                                             top_n=5)
+        
+        # Only extracts the keyword strings from the tuples returned by KeyBert
+        # Each item in 'keywords' is a tuple like ('keyword', score)
+        tags = [kw[0] for kw in keywords]
 
         # Create a simple summary (first few sentences as a preview)
         sentences = re.split(r'[.!?]+', transcript)
@@ -100,9 +111,9 @@ def upload_video():
         print("Short summary:", short_summary)
 
         return jsonify({
-            "tags": tags,
+            "tags": tags, # Extracted using KeyBERT based on transcript content
             "transcript": transcript,
-            "shortSummary": short_summary
+            "shortSummary": short_summary, # Generated using BART summarization model
         })
 
     except Exception as e:
