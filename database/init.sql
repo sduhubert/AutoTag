@@ -21,6 +21,7 @@ CREATE TABLE "video" (
     "filepath" VARCHAR(255) NOT NULL, -- stores path ("frontend/assets/video...")
     "duration" INTERVAL NOT NULL, -- Duration in HH:MM:SS format
     "uploaded_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "thumbnail" VARCHAR(255),
     FOREIGN KEY ("userid") REFERENCES "user"("userid")
     -- video stays even if user is deleted
 );
@@ -70,9 +71,9 @@ INSERT INTO "admin" ("email", "username", "password") VALUES
 ('admin@gmail.com', 'admin', 'admin1');
 
 INSERT INTO "video" ("userid", "title", "filepath", "duration") VALUES
-(1, '5 Amazing Facts About Vivaldi ｜ History Brought To Life', 'uploads/5 Amazing Facts About Vivaldi ｜ History Brought To Life.mp4', '00:01:46'),
-(2, 'Learn Italian with Luca!', 'uploads/[Pixar] Learn Italian with Luca! Pixar.mov', '00:02:47'),
-(1, 'Meet Vivaldi ｜ Composer Biography for Kids.mp3', 'uploads/Meet Vivaldi ｜ Composer Biography for Kids.mp3', '00:06:32');
+(1, '5 Amazing Facts About Vivaldi ｜ History Brought To Life', '5 Amazing Facts About Vivaldi ｜ History Brought To Life.mp4', '00:01:46'),
+(2, 'Learn Italian with Luca!', '[Pixar] Learn Italian with Luca! Pixar.mov', '00:02:47'),
+(1, 'Meet Vivaldi ｜ Composer Biography for Kids.mp3', 'Meet Vivaldi ｜ Composer Biography for Kids.mp3', '00:06:32');
 
 INSERT INTO "tag" ("name") VALUES 
 ('Education'),
