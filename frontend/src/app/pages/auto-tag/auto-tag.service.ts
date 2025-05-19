@@ -44,4 +44,14 @@ export class videoService {
       })
     );
   }
+
+    updateVideoTitle(id: number, title: string): Observable<void> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.put<void>(url, { title }).pipe(
+      catchError(error => {
+        console.error('Update failed', error);
+        return throwError(() => new Error('Failed to update video title'));
+      })
+    );
+  }
 }
