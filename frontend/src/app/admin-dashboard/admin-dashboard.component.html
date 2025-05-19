@@ -1,0 +1,58 @@
+<div class="admin-dashboard">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Admin Dashboard</h1>
+      <p class="page-subtitle">Manage videos and edit titles</p>
+    </div>
+    
+    <div class="videos-management">
+      <h2>Video Management</h2>
+      
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let video of videos">
+            <td>{{ video.videoid }}</td>
+            <td>{{ video.title }}</td>
+            <td>{{ video.description }}</td>
+            <td class="action-buttons">
+              <button (click)="startEdit(video)" class="btn-edit">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button (click)="deleteVideo(video.videoid)" class="btn-delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Edit Video Modal -->
+    <div *ngIf="editingVideo" class="edit-modal-overlay">
+      <div class="edit-modal">
+        <h3>Edit Video Title</h3>
+        <div class="form-group">
+          <label for="videoTitle">Title:</label>
+          <input 
+            type="text" 
+            id="videoTitle" 
+            [(ngModel)]="editingVideo.title" 
+            class="form-control"
+          >
+        </div>
+        <div class="modal-actions">
+          <button (click)="saveVideoTitle()" class="btn-save">Save</button>
+          <button (click)="cancelEdit()" class="btn-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -38,6 +38,14 @@ app.use('/api/video-meta', videoMetaRoutes);
 const uploadsPath = path.join(__dirname, '..', 'uploads');
 app.use('/uploads',express.static(uploadsPath));
 
+// Point directly to the volume mount path
+const videoDir = '/app/uploads_shared';
+
+const thumbnailsDir = '/app/uploads_shared/thumbnails';
+
+app.use('/app/uploads_shared', express.static(videoDir));
+
+app.use('/app/uploads_shared/thumbnails', express.static(thumbnailsDir));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

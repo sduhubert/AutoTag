@@ -11,7 +11,7 @@ import { FaqComponent } from './pages/faq/faq.components';
 import { VideosComponent } from './pages/videos/videos.component';
 import { VideoListComponent } from './pages/auto-tag/video-list/video-list.component';
 import { VideoplayerComponent } from './pages/videoplayer/videoplayer.component';
-
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 //Order of path is important (should be the same as in the routes array)
 
 const routes: Routes = [
@@ -25,6 +25,7 @@ const routes: Routes = [
   // { path: 'videos', component: VideosComponent },
   {path: 'videos', component: VideoListComponent},
   { path: 'videoplayer/:id', component: VideoplayerComponent },
+  { path: 'admin', component: AdminDashboardComponent },
   { path: '**', redirectTo: '' },
   
 ];
