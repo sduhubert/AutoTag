@@ -161,5 +161,31 @@ export const deleteVideo = async (req, res) => { // DELETE /api/video/:id
       res.status(200).json({ message: 'Video deleted' });
     } catch (err) {
       res.status(500).json({ error: 'Failed to delete video' });
+    }};
+    
+  // Update video title
+export const updateVideo = async (req, res) => {
+  try {
+    const videoId = req.params.id;
+    const { title } = req.body;
+    
+    if (!title) {
+      return res.status(400).json({ error: 'Title is required' });
     }
-  };
+    
+    const video = await Video.findByPk(videoId);
+    if (!video) return res.status(404).json({ error: 'Video not found' });
+    
+    // Update only the title
+    video.title = title;
+    await video.save();
+    
+    res.status(200).json({ 
+      message: 'Video title updated successfully',
+      video: video
+    });
+  } catch (err) {
+    console.error('Error updating video:', err);
+    res.status(500).json({ error: 'Failed to update video' });
+  }
+};
