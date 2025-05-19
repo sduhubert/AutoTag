@@ -72,6 +72,7 @@ def upload_video():
 
     # -- Generate tags with BERT --
 
+
     def chunk_text_token_aware(text, tokenizer, max_tokens=400, overlap=50):
         words = text.split()
         chunks = []
@@ -92,10 +93,10 @@ def upload_video():
             prev_i = i
             i = max(i - overlap, 0)
             if i <= prev_i:
-                break  # Prevent infinite loop if no forward progress
+                break
         return chunks
 
-    # For tags, smaller chunks (~400 tokens)
+    # smaller chunks (around 512 tokens limit)
     chunks_for_tags = chunk_text_token_aware(transcript, tokenizer, max_tokens=400, overlap=50)
 
     def extract_tags_from_transcript(transcript, kw_model, top_n_per_chunk=5, final_top_n=10):
@@ -126,7 +127,7 @@ def upload_video():
         # Sort by score and select top tags
         sorted_tags = sorted(unique_tags.items(), key=lambda x: x[1], reverse=True)[:final_top_n]
 
-        # Return only the keywords
+        # Return keywords
         tags = [kw for kw, score in sorted_tags]
         return tags
 
@@ -140,6 +141,7 @@ def upload_video():
     # -- Summary --
  
     
+    # dividing into chuncks because of the token limit around 1024 for BART
     def chunk_text_for_summary(text, tokenizer, max_tokens=1000):
         words = text.split()
         chunks = []
@@ -162,7 +164,7 @@ def upload_video():
         return jsonify({"error": "Transcript is empty, cannot summarize"}), 400
 
     try:
-        # Tokenize with truncation just to verify input size (optional check)
+        # Tokenize with truncation to verify input size
         tokenized_input = bart_tokenizer(transcript, return_tensors="pt", truncation=True, max_length=1024)
         if tokenized_input["input_ids"].shape[1] == 0:
             return jsonify({"error": "Tokenized input is empty, cannot summarize"}), 400
@@ -173,7 +175,8 @@ def upload_video():
         all_summaries = []
 
         for chunk in summary_chunks:
-            if chunk.strip():  # skip empty chunks
+            # skip empty chunks
+            if chunk.strip():
                 summary_result = summarizer(
                     chunk,
                     max_length=130,
@@ -182,7 +185,7 @@ def upload_video():
                 )
                 all_summaries.append(summary_result[0]['summary_text'])
 
-        # chunk summaries joined into a final summary string:
+        # chunk summaries joined into a final summary string
         final_summary = " ".join(all_summaries)
 
 
@@ -196,7 +199,7 @@ def upload_video():
     print("Short summary:", final_summary)
 
     return jsonify({
-        "tags": tags,           # Your extracted tags
+        "tags": tags,
         "transcript": transcript,
         "shortSummary": final_summary,
     })
