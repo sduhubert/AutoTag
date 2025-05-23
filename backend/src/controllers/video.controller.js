@@ -52,12 +52,13 @@ export const uploadFile = async (req, res) => {
 
     // Extract metadata
     const { originalname, path: filePath } = req.file;
-    const extension = path.extname(originalname);
+    const newFilename = Buffer.from(originalname, 'latin1').toString('utf8'); //fix encoding
+    const extension = path.extname(newFilename);
 
      
     // Copy file to shared folder
     const sharedUploadPath = '/app/uploads_shared';
-    const sharedFilePath = path.join(sharedUploadPath, originalname);
+    const sharedFilePath = path.join(sharedUploadPath, newFilename);
     await fs.promises.copyFile(filePath, sharedFilePath);
 
     //Copy thumbnail into shared folder thumbnails.
@@ -110,14 +111,14 @@ export const uploadFile = async (req, res) => {
         maxContentLength: Infinity,
         maxBodyLength: Infinity
       });
-      const { tags, transcript, shortSummary } = response.data;
+      const { tags, transcript, shortSummary, language } = response.data;
 
       // Store video metadata in the database
       try {
         const result = await db.sequelize.transaction(async (t) => {
           const newVideo = await Video.create({
             userid: req.user?.userid || 1, // Use authenticated user if available
-            title: originalname,
+            title: newFilename,
             filepath: sharedFilePath,
             duration: duration,
             uploaded_at: new Date(), // Add upload timestamp
@@ -137,10 +138,23 @@ export const uploadFile = async (req, res) => {
             }, { transaction: t });
           }
 
+          // ✅ Handle language storage
+          if (language) {
+            const [languageRecord] = await db.Language.findOrCreate({
+              where: { name: language },
+              transaction: t
+            });
+
+            await db.VideoLanguage.create({
+              videoid: newVideo.videoid,
+              languageid: languageRecord.languageid
+            }, { transaction: t });
+          }
+          
           // Create video summary
           await VideoSummary.create({
             videoid: newVideo.videoid,
-            summary: shortSummary // Matches schema column name
+            summary: shortSummary, // Matches schema column name
           }, { transaction: t });
 
           return { newVideo };
