@@ -36,14 +36,15 @@ import { VideosComponent } from './pages/videos/videos.component';
     BlogComponent,
     SecurityComponent,
     FaqComponent,
-    VideosComponent
+    VideosComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
     videoModule,
-    HttpClientModule 
+    HttpClientModule,
+    VideoplayerComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

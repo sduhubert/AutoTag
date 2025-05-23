@@ -7,6 +7,8 @@ interface Video {
   description: string;
   duration: string;
   thumbnailClass: string;
+  tags?: string[];
+  language?: string;
 }
 
 @Component({
@@ -105,13 +107,13 @@ export class VideosComponent {
           this.message = 'Video uploaded successfully!';
           this.isError = false;
           this.selectedFile = null;
-          
+
           // Reset file input
           const fileInput = document.getElementById('fileInput') as HTMLInputElement;
           if (fileInput) {
             fileInput.value = '';
           }
-          
+
           /*
           // PYTHON REQUEST WAS MOVED TO BACKEND!
 
