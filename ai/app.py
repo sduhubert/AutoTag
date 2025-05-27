@@ -53,11 +53,19 @@ def upload_video():
         # Deletes the video after it's converted
         os.remove(video_path)
 
+    # Check if the audio file was created
+    if not os.path.exists(audio_path):
+        return jsonify({"error": "Audio conversion failed"}), 500
+
     # Transcription, tag generation
     try:
         # Use Whisper to transcribe audio
         result = whisper_model.transcribe(audio_path)
         transcript = result["text"]
+
+        # Check if the transcript is empty
+        if not transcript.strip():
+            return jsonify({"error": "Transcription failed, no text detected"}), 500
 
         # Save transcript to file
         transcript_filename = audio_filename.rsplit('.', 1)[0] + '.txt'
