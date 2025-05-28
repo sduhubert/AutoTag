@@ -7,27 +7,29 @@ import { videoService } from '../auto-tag/auto-tag.service';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Video } from '../../models/videos';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-videoplayer',
   standalone: true,
   imports: [
+    CommonModule,
     VgCoreModule,
     VgControlsModule,
     VgOverlayPlayModule,
     VgBufferingModule,
-    
+
   ],
   templateUrl: './videoplayer.component.html',
   styleUrl: './videoplayer.component.css'
 })
-export class VideoplayerComponent { 
-  
+export class VideoplayerComponent {
+
   constructor(
-      private autoTagService: videoService, 
+      private autoTagService: videoService,
       private http : HttpClient
     , private route: ActivatedRoute
   ) { }
-  
+
   preload: string = 'auto';
   api: VgApiService = new VgApiService;
   currentVideoId: number = 0;
@@ -48,7 +50,7 @@ export class VideoplayerComponent {
     this.api = api;
     this.currentVideoId = this.getId(this.currentVideoId);
     this.LoadVideoById(this.currentVideoId);
-    console.log("current id ", this.currentVideoId); 
+    console.log("current id ", this.currentVideoId);
     console.log("current video ", this.CurrentVideo);
     console.log('onPlayerReady');
     this.api.getDefaultMedia().subscriptions.loadedMetadata.subscribe(

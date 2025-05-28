@@ -7,28 +7,31 @@
     <div class="video-upload-section">
       <h3>Upload New Video</h3>
       <div class="upload-controls">
-        <input 
-          type="file" 
-          id="fileInput" 
+        <label for="fileInput">Choose a video file:</label>
+        <input
+          type="file"
+          id="fileInput"
           (change)="onFileSelected($event)"
-          accept="video/*" 
+          accept="video/*"
+          title="Choose a video file to upload"
+          aria-label="Video file input"
         />
         <button (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
       </div>
-      
+
       <div *ngIf="message" class="upload-message" [class.error-message]="isError">
         {{ message }}
       </div>
-      
+
       <div *ngIf="isUploading" class="upload-status">
         Uploading video... Please wait.
       </div>
     </div>
-    
+
     <div class="videos-grid">
       <div class="video-card" *ngFor="let video of videos">
         <div class="video-thumbnail">
-          <img class="video-thumbnail" src="http://localhost:3000{{video.thumbnail}}">
+          <img class="video-thumbnail" src="http://localhost:3000{{video.thumbnail}}" alt="Video thumbnail">
           <div class="play-button" (click)="playVideo(video.videoid)">
             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -51,11 +54,11 @@
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
-          </div>  
+          </div>
         </div>
       </div>
     </div>
-    
+
     <div class="videos-footer">
       <p>Need more guidance? Check out our comprehensive documentation or contact support.</p>
       <div class="footer-buttons">
