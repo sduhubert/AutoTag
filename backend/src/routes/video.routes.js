@@ -1,13 +1,25 @@
 import express from 'express';
 import { uploadSingle } from '../middleware/upload.middleware.js';
-import { uploadFile, getVideos, deleteVideo, getVideoById, updateVideo } from '../controllers/video.controller.js';
+import { 
+  uploadFile, 
+  getVideos, 
+  deleteVideo, 
+  getVideoById, 
+  updateVideo,
+  updateVideoTags,
+  updateVideoSummary,
+  updateVideoValidation
+} from '../controllers/video.controller.js';
 
 const router = express.Router();
 
-router.post('/upload', uploadSingle, uploadFile); // GET /api/video/upload
-router.get('/', getVideos); //GET /api/video
-router.get('/:id', getVideoById); //GET /api/video/:id
-router.delete('/:id', deleteVideo); //DELETE /api/video/:id
-router.put('/:id', updateVideo); // PUT /api/video/:id
+router.post('/upload', uploadSingle, uploadFile);
+router.get('/', getVideos);
+router.get('/:id', getVideoById);
+router.delete('/:id', deleteVideo);
+router.put('/:id', updateVideo);
+router.put('/:id/tags', updateVideoTags);
+router.put('/:id/summary', updateVideoSummary);
+router.put('/:id/validation', updateVideoValidation);
 
 export default router;
