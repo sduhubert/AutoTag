@@ -86,6 +86,14 @@ def upload_video():
             "ta": "Tamil", "th": "Thai", "tr": "Turkish", "uk": "Ukrainian", "ur": "Urdu",
             "vi": "Vietnamese", "cy": "Welsh"}
     language_full = language_map.get(lang_code, lang_code)
+    # Early exit if transcript is empty or too short
+    if not transcript or len(transcript.strip()) < 20: 
+        return jsonify({
+            "tags": ["Lyrics-free"],
+            "transcript": transcript,
+            "shortSummary": "Not enough content for summarization.",
+            "language": language_full
+        })
 
     # Translate if needed
     if lang_code != 'en':
@@ -124,7 +132,7 @@ def upload_video():
         return chunks
 
     # ------- Tag Extraction -------
-    def extract_tags(transcript, kw_model, tokenizer, top_n_per_chunk=5, final_top_n=10):
+    def extract_tags(transcript, kw_model, tokenizer, top_n_per_chunk=3, final_top_n=10):
         all_keywords = []
         chunks = chunk_text_token_aware(transcript, tokenizer, max_tokens=400, overlap=50)
 
@@ -132,7 +140,7 @@ def upload_video():
             try:
                 keywords = kw_model.extract_keywords(
                     chunk,
-                    keyphrase_ngram_range=(1, 2),
+                    keyphrase_ngram_range=(1, 1),
                     stop_words='english',
                     use_maxsum=True,
                     top_n=top_n_per_chunk
