@@ -19,6 +19,10 @@ export class VideoListComponent implements OnInit{
   constructor (private videoService: videoService, private http: HttpClient){}
 
   ngOnInit(): void {
+    this.loadVideosData();
+  }
+
+  loadVideosData(){
     this.videoService.getVideos().subscribe(data => {
       
       console.log( "directly loaded videos",data);
@@ -89,8 +93,7 @@ export class VideoListComponent implements OnInit{
             fileInput.value = '';
           }
           
-          // You could add logic here to refresh the videos list
-          // or add the newly uploaded video to the list
+          this.loadVideosData();
           
         },
         error: (error) => {
