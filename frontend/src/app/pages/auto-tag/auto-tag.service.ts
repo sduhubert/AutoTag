@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { Video } from '../../models/videos';
-import { Visitor } from '@angular/compiler';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -44,13 +44,47 @@ export class videoService {
       })
     );
   }
-
-    updateVideoTitle(id: number, title: string): Observable<void> {
+  
+  // Method to update video title
+  updateVideoTitle(id: number, title: string): Observable<void> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.put<void>(url, { title }).pipe(
       catchError(error => {
         console.error('Update failed', error);
         return throwError(() => new Error('Failed to update video title'));
+      })
+    );
+  }
+
+  //Method to update video tags
+  updateVideoTags(id: number, tags: string[]): Observable<void> {
+    const url = `${this.apiUrl}/${id}/tags`;
+    return this.http.put<void>(url, { tags }).pipe(
+      catchError(error => {
+        console.error('Update tags failed', error);
+        return throwError(() => new Error('Failed to update video tags'));
+      })
+    );
+  }
+
+  //Method to update video summary
+  updateVideoSummary(id: number, summary: string): Observable<void> {
+    const url = `${this.apiUrl}/${id}/summary`;
+    return this.http.put<void>(url, { summary }).pipe(
+      catchError(error => {
+        console.error('Update summary failed', error);
+        return throwError(() => new Error('Failed to update video summary'));
+      })
+    );
+  }
+
+  //Method to update video validation status
+  updateVideoValidation(id: number, validated: boolean): Observable<void> {
+    const url = `${this.apiUrl}/${id}/validation`;
+    return this.http.put<void>(url, { validated }).pipe(
+      catchError(error => {
+        console.error('Update validation failed', error);
+        return throwError(() => new Error('Failed to update video validation'));
       })
     );
   }

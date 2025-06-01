@@ -43,6 +43,7 @@ export class VideoplayerComponent {
     tags: [],
     video_summary: { summary: '' },
     thumbnail: '',
+    validated: false
   };
 
   //Autoplay on page load

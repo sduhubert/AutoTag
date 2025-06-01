@@ -226,3 +226,114 @@ export const updateVideo = async (req, res) => {
     res.status(500).json({ error: 'Failed to update video' });
   }
 };
+
+// Update video tags
+export const updateVideoTags = async (req, res) => {
+  try {
+    const videoId = req.params.id;
+    const { tags } = req.body;
+    
+    if (!tags || !Array.isArray(tags)) {
+      return res.status(400).json({ error: 'Tags array is required' });
+    }
+    
+    const video = await Video.findByPk(videoId);
+    if (!video) return res.status(404).json({ error: 'Video not found' });
+    
+    await db.sequelize.transaction(async (t) => {
+      // Remove all existing tags for this video
+      await VideoTag.destroy({
+        where: { videoid: videoId },
+        transaction: t
+      });
+      
+      // Add new tags
+      for (const tagName of tags) {
+        if (tagName.trim()) {
+          const [tag] = await Tag.findOrCreate({
+            where: { name: tagName.trim() },
+            transaction: t
+          });
+          
+          await VideoTag.create({
+            videoid: videoId,
+            tagid: tag.tagid
+          }, { transaction: t });
+        }
+      }
+    });
+    
+    res.status(200).json({ 
+      message: 'Video tags updated successfully'
+    });
+  } catch (err) {
+    console.error('Error updating video tags:', err);
+    res.status(500).json({ error: 'Failed to update video tags' });
+  }
+};
+
+// Update video summary
+export const updateVideoSummary = async (req, res) => {
+  try {
+    const videoId = req.params.id;
+    const { summary } = req.body;
+    
+    if (summary === undefined || summary === null) {
+      return res.status(400).json({ error: 'Summary is required' });
+    }
+    
+    const video = await Video.findByPk(videoId);
+    if (!video) return res.status(404).json({ error: 'Video not found' });
+    
+    // Find the video summary record
+    let videoSummary = await VideoSummary.findOne({
+      where: { videoid: videoId }
+    });
+    
+    if (videoSummary) {
+      // Update existing summary
+      videoSummary.summary = summary;
+      await videoSummary.save();
+    } else {
+      // Create new summary if it doesn't exist
+      await VideoSummary.create({
+        videoid: videoId,
+        summary: summary
+      });
+    }
+    
+    res.status(200).json({ 
+      message: 'Video summary updated successfully'
+    });
+  } catch (err) {
+    console.error('Error updating video summary:', err);
+    res.status(500).json({ error: 'Failed to update video summary' });
+  }
+};
+
+// Update video validation status
+export const updateVideoValidation = async (req, res) => {
+  try {
+    const videoId = req.params.id;
+    const { validated } = req.body;
+    
+    if (typeof validated !== 'boolean') {
+      return res.status(400).json({ error: 'Validated must be a boolean value' });
+    }
+    
+    const video = await Video.findByPk(videoId);
+    if (!video) return res.status(404).json({ error: 'Video not found' });
+    
+    // Update the validation status
+    video.validated = validated;
+    await video.save();
+    
+    res.status(200).json({ 
+      message: 'Video validation status updated successfully',
+      validated: video.validated
+    });
+  } catch (err) {
+    console.error('Error updating video validation:', err);
+    res.status(500).json({ error: 'Failed to update video validation' });
+  }
+};
