@@ -12,13 +12,11 @@
           type="file"
           id="fileInput"
           (change)="onFileSelected($event)"
-          accept="video/*"
-          title="Choose a video file to upload"
-          aria-label="Video file input"
-        />
-        <button (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
+          accept="video/*,audio/*"
+          title="Choose a video or audio file to upload"
+          aria-label="Video or audio file input"/>        
+          <button (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
       </div>
-
       <div *ngIf="message" class="upload-message" [class.error-message]="isError">
         {{ message }}
       </div>
