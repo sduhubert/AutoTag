@@ -12,13 +12,11 @@
           type="file"
           id="fileInput"
           (change)="onFileSelected($event)"
-          accept="video/*"
-          title="Choose a video file to upload"
-          aria-label="Video file input"
-        />
-        <button (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
+          accept="video/*,audio/*"
+          title="Choose a video or audio file to upload"
+          aria-label="Video or audio file input"/>        
+          <button (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
       </div>
-
       <div *ngIf="message" class="upload-message" [class.error-message]="isError">
         {{ message }}
       </div>
@@ -31,7 +29,11 @@
     <div class="videos-grid">
       <div class="video-card" *ngFor="let video of videos">
         <div class="video-thumbnail">
-          <img class="video-thumbnail" src="http://localhost:3000{{video.thumbnail}}" alt="Video thumbnail">
+          <img 
+            class="video-thumbnail"
+            [src]="video.thumbnail ? 'http://localhost:3000' + video.thumbnail : 'assets/defaultthumbnail.jpg'" 
+            alt="Video thumbnail"
+            >
           <div class="play-button" (click)="playVideo(video.videoid)">
             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>

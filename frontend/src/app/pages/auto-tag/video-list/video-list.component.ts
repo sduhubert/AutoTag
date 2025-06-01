@@ -19,6 +19,10 @@ export class VideoListComponent implements OnInit{
   constructor (private videoService: videoService, private http: HttpClient){}
 
   ngOnInit(): void {
+    this.loadVideosData();
+  }
+
+  loadVideosData(){
     this.videoService.getVideos().subscribe(data => {
       
       console.log( "directly loaded videos",data);
@@ -49,6 +53,7 @@ export class VideoListComponent implements OnInit{
       this.selectedFile = fileList[0];
       this.message = `File selected: ${this.selectedFile.name}`;
       this.isError = false;
+      console.log(this.selectedFile.name);
     }
   }
 
@@ -60,12 +65,12 @@ export class VideoListComponent implements OnInit{
     }
 
     // Check file type
-    const fileType = this.selectedFile.type;
-    if (!fileType.includes('video/')) {
-      this.message = 'Please select a video file';
-      this.isError = true;
-      return;
-    }
+    // const fileType = this.selectedFile.type;
+    // if (!(fileType.includes('video/') && (fileType.includes('audio/')))) {
+    //   this.message = 'Please select a video file';
+    //   this.isError = true;
+    //   return;
+    // }
 
     this.isUploading = true;
     this.message = '';
@@ -88,8 +93,8 @@ export class VideoListComponent implements OnInit{
             fileInput.value = '';
           }
           
-          // You could add logic here to refresh the videos list
-          // or add the newly uploaded video to the list
+          this.loadVideosData();
+          
         },
         error: (error) => {
           this.isUploading = false;
