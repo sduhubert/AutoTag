@@ -1,0 +1,18 @@
+<div class="features-page">
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title">Features</h1>
+        <p class="page-subtitle">Discover the powerful capabilities of Auto Tag</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card" *ngFor="let feature of features">
+          <div class="feature-icon" [ngClass]="{'primary': feature.id % 2 === 0, 'secondary': feature.id % 2 !== 0}">
+            <div class="icon-placeholder"></div>
+          </div>
+          <h3 class="feature-title">{{ feature.title }}</h3>
+          <p class="feature-description">{{ feature.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>

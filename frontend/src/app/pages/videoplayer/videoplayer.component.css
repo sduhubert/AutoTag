@@ -1,0 +1,9 @@
+.h2 {
+    font-size: large;
+}
+
+.container {
+        display: flex;
+        flex-direction: column;
+        padding-left: 5vh;
+       }

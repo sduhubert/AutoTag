@@ -1,0 +1,33 @@
+@import '../../../../styles/variables';
+
+.footer {
+  background-color: $light-gray;
+  padding: 2rem 0;
+  
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .footer-info {
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      
+      .primary {
+        color: $primary-color;
+      }
+      
+      .secondary {
+        color: $secondary-color;
+      }
+    }
+    
+    .copyright {
+      color: $text-light;
+      font-size: 0.875rem;
+    }
+  }
+}

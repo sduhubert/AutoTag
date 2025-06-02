@@ -1,0 +1,113 @@
+<div class="videos-page">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Tutorial Videos</h1>
+      <p class="page-subtitle">Learn how to make the most of Auto Tag</p>
+    </div>
+<!-- SEARCH SECTION -->
+<div class="video-search-section">
+  <div class="search-bar">
+    <div class="search-input-wrapper">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onSearchInput($event)"
+        placeholder="Search videos by title, tags, summary or language..."
+        class="search-input"
+        aria-label="Search videos"
+        autocomplete="off"
+      />
+      <button
+        *ngIf="searchQuery"
+        (click)="clearSearch()"
+        class="clear-search-button"
+        title="Clear search"
+        aria-label="Clear search"
+      >
+        ✕
+      </button>
+    </div> <!-- close search-input-wrapper -->
+  </div> <!-- close search-bar -->
+
+  <!-- Search loading indicator -->
+  <div *ngIf="isSearching" class="search-loading">
+    <div class="search-spinner"></div>
+    <span>Searching videos...</span>
+  </div>
+
+  <!-- Search results info -->
+  <div *ngIf="hasSearched && !isSearching" class="search-results-info">
+    <p *ngIf="videos.length > 0">
+      Found <strong>{{ totalResults }}</strong> videos for "{{ searchQuery }}"
+    </p>
+    <p *ngIf="videos.length === 0">
+      No videos found for "{{ searchQuery }}"
+    </p>
+  </div>
+</div>
+    <div class="video-upload-section">
+      <h3>Upload New Video</h3>
+      <div class="upload-controls">
+        <label for="fileInput">Choose a video file:</label>
+        <input
+          type="file"
+          id="fileInput"
+          (change)="onFileSelected($event)"
+          accept="video/*,audio/*"
+          title="Choose a video or audio file to upload"
+          aria-label="Video or audio file input"/>        
+          <button (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
+      </div>
+      <div *ngIf="message" class="upload-message" [class.error-message]="isError">
+        {{ message }}
+      </div>
+
+      <div *ngIf="isUploading" class="upload-status">
+        Uploading video... Please wait.
+      </div>
+    </div>
+
+    <div class="videos-grid">
+      <div class="video-card" *ngFor="let video of videos">
+        <div class="video-thumbnail">
+          <img 
+            class="video-thumbnail"
+            [src]="video.thumbnail ? 'http://localhost:3000' + video.thumbnail : 'assets/defaultthumbnail.jpg'" 
+            alt="Video thumbnail"
+            >
+          <div class="play-button" (click)="playVideo(video.videoid)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </div>
+          <!-- <div class="video-duration">{{video.duration}}</div> -->
+        </div>
+        <div class="video-content">
+          <h3 class="video-title">{{ video.title }}</h3>
+          <p class="video-description">{{ video.description }}</p>
+          <div>
+            <h4>Tags:</h4>
+            <div class="video-tags" *ngFor="let tag of video.tags">{{ tag.name }}</div>
+          </div>
+          <div>
+            <h4>Summary:</h4>
+            <p>{{video.video_summary.summary}}</p>
+            <div class="button-panel">
+              <button (click)="deleteVideo(video.videoid)" class="button-delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="videos-footer">
+      <p>Need more guidance? Check out our comprehensive documentation or contact support.</p>
+      <div class="footer-buttons">
+        <button class="btn btn-primary">Documentation</button>
+        <button class="btn btn-secondary">Contact Support</button>
+      </div>
+    </div>
+  </div>
+</div>

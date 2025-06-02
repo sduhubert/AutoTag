@@ -1,0 +1,31 @@
+<div class="security-page">
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title">Security</h1>
+        <p class="page-subtitle">Our commitment to protecting your data</p>
+      </div>
+      
+      <div class="security-intro">
+        <p>
+          At Auto Tag, we understand that security is not just a feature—it's a foundation.
+          We've built our platform with security as a top priority, implementing industry best practices
+          and robust technologies to ensure your data remains safe and confidential.
+        </p>
+      </div>
+      
+      <div class="security-features">
+        <div class="security-card" *ngFor="let feature of securityFeatures">
+          <h3 class="feature-title">{{ feature.title }}</h3>
+          <p class="feature-description">{{ feature.description }}</p>
+        </div>
+      </div>
+      
+      <div class="security-contact">
+        <h2 class="contact-title">Need more information?</h2>
+        <p class="contact-text">
+          Our security team is available to answer any questions you may have about our security practices.
+        </p>
+        <button class="btn btn-secondary">Contact Security Team</button>
+      </div>
+    </div>
+  </div>

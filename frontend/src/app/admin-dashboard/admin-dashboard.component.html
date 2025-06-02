@@ -1,0 +1,146 @@
+<div class="admin-dashboard">
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Admin Dashboard</h1>
+      <p class="page-subtitle">Manage videos, tags, summaries, and validation</p>
+    </div>
+    
+    <div class="videos-management">
+      <h2>Video Management</h2>
+      
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Tags</th>
+            <th>Summary</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let video of videos">
+            <td>{{ video.videoid }}</td>
+            <td>{{ video.title }}</td>
+            <td class="tags-cell">
+              <span class="tag-display">{{ getTagsAsString(video.tags) }}</span>
+            </td>
+            <td class="summary-cell">
+              <span class="summary-display">{{ getTruncatedSummary(video.video_summary.summary) }}</span>
+            </td>
+            <td class="status-cell">
+              <button 
+                (click)="toggleVideoValidation(video)" 
+                [class]="video.validated ? 'status-approved' : 'status-pending'"
+                class="status-button"
+              >
+                {{ video.validated ? 'Approved' : 'Pending' }}
+              </button>
+            </td>
+            <td class="action-buttons">
+              <button (click)="startEdit(video)" class="btn-edit" title="Edit Title">
+                ✏️
+              </button>
+              <button (click)="startEditTags(video)" class="btn-tags" title="Edit Tags">
+                🏷️
+              </button>
+              <button (click)="startEditSummary(video)" class="btn-summary" title="Edit Summary">
+                📄
+              </button>
+              <button (click)="deleteVideo(video.videoid)" class="btn-delete" title="Delete Video">
+                🗑️
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Edit Title Modal -->
+    <div *ngIf="editingVideo" class="edit-modal-overlay">
+      <div class="edit-modal">
+        <h3>Edit Video Title</h3>
+        <div class="form-group">
+          <label for="videoTitle">Title:</label>
+          <input 
+            type="text" 
+            id="videoTitle" 
+            [value]="editingVideo.title"
+            (input)="updateVideoTitle($event)"
+            class="form-control"
+          >
+        </div>
+        <div class="modal-actions">
+          <button (click)="saveVideoTitle()" class="btn-save">Save</button>
+          <button (click)="cancelEdit()" class="btn-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Tags Modal -->
+    <div *ngIf="editingTags" class="edit-modal-overlay">
+      <div class="edit-modal">
+        <h3>Edit Video Tags</h3>
+        
+        <!-- Current Tags -->
+        <div class="form-group">
+          <label>Current Tags:</label>
+          <div class="tags-container">
+            <span 
+              *ngFor="let tag of editingTags.tags; let i = index" 
+              class="tag-item"
+            >
+              {{ tag.name }}
+              <button (click)="removeTag(i)" class="tag-remove">×</button>
+            </span>
+          </div>
+        </div>
+
+        <!-- Add New Tag -->
+        <div class="form-group">
+          <label for="newTag">Add New Tag:</label>
+          <div class="add-tag-container">
+            <input 
+              type="text" 
+              id="newTag" 
+              [value]="newTagName"
+              (input)="updateNewTagName($event)"
+              (keyup.enter)="addTag()"
+              class="form-control"
+              placeholder="Enter tag name"
+            >
+            <button (click)="addTag()" class="btn-add-tag">Add</button>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button (click)="saveVideoTags()" class="btn-save">Save Tags</button>
+          <button (click)="cancelEditTags()" class="btn-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Summary Modal -->
+    <div *ngIf="editingSummary" class="edit-modal-overlay">
+      <div class="edit-modal">
+        <h3>Edit Video Summary</h3>
+        <div class="form-group">
+          <label for="videoSummary">Summary:</label>
+          <textarea 
+            id="videoSummary" 
+            [value]="editingSummary.video_summary.summary"
+            (input)="updateVideoSummaryText($event)"
+            class="form-control summary-textarea"
+            rows="6"
+            placeholder="Enter video summary..."
+          ></textarea>
+        </div>
+        <div class="modal-actions">
+          <button (click)="saveVideoSummary()" class="btn-save">Save Summary</button>
+          <button (click)="cancelEditSummary()" class="btn-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

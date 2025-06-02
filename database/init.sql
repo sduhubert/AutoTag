@@ -1,140 +1,136 @@
 -- CREATION OF TABLES --
 
 CREATE TABLE "user" (
-    userid SERIAL PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    username VARCHAR(255),
+    "userid" SERIAL PRIMARY KEY,
+    "email" VARCHAR(255) UNIQUE NOT NULL,
+    "username" VARCHAR(255),
     "password" VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE admin (
-    adminid SERIAL PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    username VARCHAR(255),
+CREATE TABLE "admin" (
+    "adminid" SERIAL PRIMARY KEY,
+    "email" VARCHAR(255) UNIQUE NOT NULL,
+    "username" VARCHAR(255),
     "password" VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE video (
-    videoid SERIAL PRIMARY KEY,
-    userid INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    url VARCHAR(255) NOT NULL,
-    duration INTERVAL NOT NULL, -- Duration in HH:MM:SS format
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (userid) REFERENCES "user"(userid)
+CREATE TABLE "video" (
+    "videoid" SERIAL PRIMARY KEY,
+    "userid" INT NOT NULL,
+    "title" VARCHAR(255) NOT NULL,
+    "filepath" VARCHAR(255) NOT NULL, -- stores path ("frontend/assets/video...")
+    "duration" INTERVAL NOT NULL, -- Duration in HH:MM:SS format
+    "uploaded_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "thumbnail" VARCHAR(255),
+    "validated" BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY ("userid") REFERENCES "user"("userid")
     -- video stays even if user is deleted
 );
 
-CREATE TABLE audio (
-    audioid SERIAL PRIMARY KEY,
-    userid INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    url VARCHAR(255) NOT NULL,
-    duration INTERVAL NOT NULL, -- Duration in HH:MM:SS format
-    -- duration INT NOT NULL, -- Duration in seconds, which is another option, 
-    -- but HH:MM:SS is probably better
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (userid) REFERENCES "user"(userid)
-    -- audio stays even if user is deleted
+CREATE TABLE "tag" (
+    "tagid" SERIAL PRIMARY KEY,
+    "name" VARCHAR(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE tag (
-    tagid SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
+-- table that connects tags with videos (by their id's)
+CREATE TABLE "video_tag" (
+    "videoid" INT NOT NULL,
+    "tagid" INT NOT NULL,
+    FOREIGN KEY ("videoid") REFERENCES "video"("videoid") ON DELETE CASCADE, 
+    -- associated tag is deleted when video is deleted
+    FOREIGN KEY ("tagid") REFERENCES "tag"("tagid") ON DELETE CASCADE
 );
 
-CREATE TABLE video_tag (
-    videoid INT NOT NULL,
-    tagid INT NOT NULL,
-    PRIMARY KEY (videoid, tagid),
-    FOREIGN KEY (videoid) REFERENCES video(videoid) ON DELETE CASCADE, 
-    --associated tag is deleted when video is deleted
-    FOREIGN KEY (tagid) REFERENCES tag(tagid) ON DELETE CASCADE
+-- content summary --
+CREATE TABLE "video_summary" (
+    "summaryid" SERIAL PRIMARY KEY,
+    "videoid" INT NOT NULL,
+    "summary" TEXT NOT NULL,
+    FOREIGN KEY ("videoid") REFERENCES "video"("videoid") ON DELETE CASCADE
 );
 
-CREATE TABLE audio_tag (
-    audioid INT NOT NULL,
-    tagid INT NOT NULL,
-    PRIMARY KEY (audioid, tagid),
-    FOREIGN KEY (audioid) REFERENCES audio(audioid) ON DELETE CASCADE,
-    -- associated tag is deleted when audio is deleted
-    FOREIGN KEY (tagid) REFERENCES tag(tagid) ON DELETE CASCADE
+CREATE TABLE "language" (
+    "languageid" SERIAL PRIMARY KEY,
+    "name" VARCHAR(50) UNIQUE NOT NULL
 );
 
--- (Audio and video) content summary --
-
-CREATE TABLE video_summary (
-    summaryid SERIAL PRIMARY KEY,
-    videoid INT NOT NULL,
-    summary TEXT NOT NULL,
-    FOREIGN KEY (videoid) REFERENCES video(videoid) ON DELETE CASCADE
-);
-
-CREATE TABLE audio_summary (
-    summaryid SERIAL PRIMARY KEY,
-    audioid INT NOT NULL,
-    summary TEXT NOT NULL,
-    FOREIGN KEY (audioid) REFERENCES audio(audioid) ON DELETE CASCADE
+CREATE TABLE "video_language" (
+    "videoid" INT NOT NULL,
+    "languageid" INT NOT NULL,
+    PRIMARY KEY ("videoid", "languageid"),
+    FOREIGN KEY ("videoid") REFERENCES "video"("videoid") ON DELETE CASCADE,
+    FOREIGN KEY ("languageid") REFERENCES "language"("languageid")
 );
 
 -- MOCK DATA, will be changed to real data eventually --
 
-INSERT INTO "user" (email, username, "password") VALUES 
+INSERT INTO "user" ("email", "username", "password") VALUES 
 ('user1@gmail.com', 'user1', 'password1'),
 ('user2@gmail.com', 'user2', 'password2');
 
-INSERT INTO admin (email, username, "password") VALUES
+INSERT INTO "admin" ("email", "username", "password") VALUES
 ('admin@gmail.com', 'admin', 'admin1');
 
-INSERT INTO video (userid, title, description, url, duration) VALUES
-(1, 'My First Video', 'This is a sample video.', 'https://example.com/video1.mp4', '01:00:00'),
-(2, 'Nature Documentary', 'A beautiful nature documentary.', 'https://example.com/video2.mp4', '01:30:00');
+INSERT INTO "video" ("userid", "title", "filepath", "duration") VALUES
+(1, '5 Amazing Facts About Vivaldi ｜ History Brought To Life', '5 Amazing Facts About Vivaldi ｜ History Brought To Life.mp4', '00:01:46'),
+(2, 'Learn Italian with Luca!', '[Pixar] Learn Italian with Luca! Pixar.mov', '00:02:47'),
+(1, 'Meet Vivaldi ｜ Composer Biography for Kids.mp3', 'Meet Vivaldi ｜ Composer Biography for Kids.mp3', '00:06:32');
 
-INSERT INTO audio (userid, title, description, url, duration) VALUES
-(1, 'Podcast Episode 1', 'A discussion about technology.', 'https://example.com/audio1.mp3', '00:30:00'),
-(2, 'Music Track', 'An original music piece.', 'https://example.com/audio2.mp3', '00:04:00');
-
-INSERT INTO tag (name) VALUES 
+INSERT INTO "tag" ("name") VALUES 
 ('Education'),
 ('Entertainment'),
-('Technology'),
 ('Music'),
+('Kids'),
+('Learning'),
+('Motivation'),
+('National Anthem'),
+('Eurovision'),
+('Instrumental'),
+('Technology'),
 ('Electronic'), 
 ('Jazz'), 
 ('Synthwave'), 
 ('Rock'), 
 ('Classical'), 
 ('Live Performance'), 
-('Instrumental'), 
 ('DJ Set'), 
 ('Guitar Solo'), 
 ('Piano');
 
-INSERT INTO video_tag (videoid, tagid) VALUES 
-(1, 1), (1, 8), 
-(2, 2), (2, 6), 
-(3, 3), (3, 6), 
-(4, 4), (4, 9), 
-(5, 5), (5, 10);
-
-INSERT INTO audio_tag (audioid, tagid) VALUES 
-(1, 1), (1, 7), 
-(2, 2), (2, 7), 
-(3, 3), (3, 7), 
-(4, 4), (4, 9), 
-(5, 5), (5, 10);
+INSERT INTO "video_tag" ("videoid", "tagid") VALUES
+(1, 3), (1, 4), -- Clap Clap Kids (Music, Kids)
+(2, 1), (2, 5), -- Pixar (Education, Learning)
+(3, 1), (3, 2); -- Vivaldi (Education, Entertainment)
 
 -- Insert mock data for video summaries
-INSERT INTO video_summary (videoid, summary) VALUES
-(1, 'A full-length DJ set recorded live in Ibiza with house and trance music.'),
-(2, 'A jazz masterclass showcasing improvisation techniques on the saxophone.');
+INSERT INTO "video_summary" ("videoid", "summary") VALUES
+(1, 'A fun and energetic Spanish kids'' song with catchy beats and simple lyrics, perfect for young children to sing along to while learning new words in Spanish.'),
+(2, 'An engaging and entertaining Italian language lesson featuring Luca, a Pixar-style character who helps viewers learn basic Italian phrases through a fun, animated adventure.'),
+(3, 'Discover five fascinating facts about Antonio Vivaldi, the legendary composer, as we explore his life, music, and lasting influence on classical music.');
+/*
+(4, 'A beginner-friendly French lesson that teaches basic greetings and common phrases, designed for those starting to learn the language.'),
+(5, 'The traditional Danish national anthem, "Der er et yndigt land," featuring a solemn and patriotic melody that has been a symbol of Denmark for centuries.'),
+(6, 'A motivational audio story about the importance of resilience, perseverance, and learning from life''s challenges, narrated with an inspiring tone.'),
+(7, 'A quirky and catchy pop track from Tommy Cash, blending rap, electronic beats, and unique soundscapes, with a humorous and offbeat vibe.'),
+(8, 'A humorous and engaging exploration of the Indian English accent, featuring examples of unique phrases and pronunciations, making it a fun listen for language enthusiasts.'),
+(9, 'A playful and upbeat instrumental song aimed at toddlers, with simple rhythms and sounds to help young children develop their sense of timing and rhythm.'),
+(10, 'An engaging introduction to the life and works of Antonio Vivaldi, designed for children and young learners, with exciting facts and music samples.'),
+(11, 'A kid-friendly lesson introducing basic music theory concepts, including rhythm, melody, and harmony, aimed at sparking interest in music education for young listeners.'),
+(12, 'A retro-inspired electronic track featuring elements of 8-bit music, blended with modern beats and synths, evoking the feeling of a classic video game soundtrack.'),
+(13, 'A catchy and vibrant track from Sw@da and Niczos, combining elements of Polish pop and electronic music, with an energetic and fun vibe, perfect for dancing.');
+*/
 
--- Insert mock data for audio summaries
-INSERT INTO audio_summary (audioid, summary) VALUES
-(1, 'A deep electronic symphony with a mix of ambient and techno elements.'),
-(2, 'Smooth jazz night vibes, featuring saxophone and piano solos.'),
-(3, 'A podcast discussing the latest trends in technology and innovation.'),
-(4, 'An original music piece blending classical and electronic elements.'),
-(5, 'A live DJ set recorded at a music festival, with vibrant house beats.');
+INSERT INTO "language" ("name") VALUES 
+('English'),
+('French'),
+('Spanish'),
+('Danish'),
+('Estonian'),
+('Polish'),
+('Italian'),
+('Hindi');
+
+INSERT INTO "video_language" ("videoid", "languageid") VALUES 
+(1, 3),  -- Spanish (Clap Clap Kids)
+(2, 7),  -- Italian (Pixar)
+(3, 1);  -- English (Vivaldi Facts)

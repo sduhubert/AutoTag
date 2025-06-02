@@ -1,0 +1,73 @@
+@import '../../../styles/variables';
+
+.features-page {
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    
+    .page-title {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .page-subtitle {
+      color: $text-medium;
+      font-size: 1.125rem;
+    }
+  }
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+    
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .feature-card {
+    background-color: $white;
+    border-radius: $border-radius;
+    box-shadow: $shadow-sm;
+    padding: 1.5rem;
+    
+    .feature-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      
+      &.primary {
+        background-color: $primary-color;
+      }
+      
+      &.secondary {
+        background-color: $secondary-color;
+      }
+      
+      .icon-placeholder {
+        width: 1.5rem;
+        height: 1.5rem;
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+    }
+    
+    .feature-title {
+      margin-bottom: 0.75rem;
+      font-size: 1.25rem;
+    }
+    
+    .feature-description {
+      color: $text-medium;
+      font-size: 0.875rem;
+    }
+  }
+}

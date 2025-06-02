@@ -1,0 +1,55 @@
+@import '../../../styles/variables';
+
+.home-page {
+  .container {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+  }
+  
+  .hero-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    
+    @media (min-width: 768px) {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+  
+  .hero-content {
+    flex: 1;
+    
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      
+      .highlight {
+        color: $secondary-color;
+      }
+    }
+    
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: $primary-color;
+      margin-bottom: 1rem;
+    }
+    
+    .hero-description {
+      color: $text-medium;
+      margin-bottom: 2rem;
+    }
+  }
+  
+  .hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    
+    svg {
+      max-width: 300px;
+      height: auto;
+    }
+  }
+}

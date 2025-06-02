@@ -1,0 +1,16 @@
+<nav class="navigation">
+    <div class="container">
+      <div class="nav-items">
+        <a *ngFor="let item of navItems"
+           [routerLink]="item.path"
+           routerLinkActive="active"
+           class="nav-item">
+          {{ item.label }}
+        </a>
+      </div>
+      
+      <div class="nav-actions">
+        <button class="btn btn-secondary">CONTACT US</button>
+      </div>
+    </div>
+  </nav>
