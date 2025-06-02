@@ -1,5 +1,5 @@
 import db from '../models/index.js';
-const { Video, Tag, VideoTag, VideoSummary } = db;
+const { Video, Tag, VideoTag, VideoSummary, Language, VideoLanguage } = db;
 import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import fs from 'fs';
 import FormData from 'form-data';
 import { publicDecrypt } from 'crypto';
 import VideoService from '../services/video.service.js';
+import { Op } from 'sequelize';
 
 // Get all videos
 
@@ -335,5 +336,67 @@ export const updateVideoValidation = async (req, res) => {
   } catch (err) {
     console.error('Error updating video validation:', err);
     res.status(500).json({ error: 'Failed to update video validation' });
+  }
+};
+
+
+// Search videos function - handles video search functionality
+export const searchVideos = async (req, res) => {
+  try {
+    const { q, page = 1, limit = 10 } = req.query;
+
+    if (!q || q.trim() === '') {
+      return res.status(400).json({ error: 'Search query is required' });
+    }
+
+    const searchTerm = q.trim();
+    const offset = (page - 1) * limit;
+
+    const { rows: videos, count: totalCount } = await Video.findAndCountAll({
+      where: {
+        [Op.or]: [
+          { title: { [Op.iLike]: `%${searchTerm}%` } },
+          { '$tags.name$': { [Op.iLike]: `%${searchTerm}%` } },
+          { '$video_summary.summary$': { [Op.iLike]: `%${searchTerm}%` } },
+          { '$languages.name$': { [Op.iLike]: `%${searchTerm}%` } },
+        ],
+      },
+      include: [
+        {
+          model: Tag,
+          as: 'tags',                    // make sure this matches your model alias
+          through: { attributes: [] },
+          required: false,
+        },
+        {
+          model: VideoSummary,
+          as: 'video_summary',           // make sure this matches your model alias
+          required: false,
+        },
+        {
+          model: db.Language,
+          as: 'languages',               // make sure this matches your model alias
+          through: { attributes: [] },
+          required: false,
+        },
+      ],
+      distinct: true,      // ensures correct count with joins
+      offset,
+      limit: parseInt(limit),
+      order: [['uploaded_at', 'DESC']],
+      subQuery: false,     // IMPORTANT: disables subquery to fix missing FROM-clause error
+    });
+
+    res.json({
+      videos,
+      totalCount,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalCount / limit),
+      searchTerm,
+    });
+
+  } catch (err) {
+    console.error('Search error:', err);
+    res.status(500).json({ error: 'Failed to search videos' });
   }
 };

@@ -2,35 +2,52 @@ import { Component, importProvidersFrom, OnInit } from '@angular/core';
 import { videoModule } from '../auto-tag.module';
 import { videoService } from '../auto-tag.service';
 import { Video } from '../../../models/videos';
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
+import { debounceTime, distinctUntilChanged, Subject, Subscription, switchMap } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-video-list',
   standalone: true,
-  imports: [NgFor, NgIf, MatIconModule],
+  imports: [NgFor, NgIf, MatIconModule, CommonModule, FormsModule],
   templateUrl: './video-list.component.html',
   styleUrl: './video-list.component.scss'
 })
 export class VideoListComponent implements OnInit{
   
   videos: Video[] = [];
+  allVideos: Video[] = [];
   
   constructor (private videoService: videoService, private http: HttpClient){}
 
   ngOnInit(): void {
     this.loadVideosData();
+    this.setupSearch();
   }
+
+  // Search functionality
+    searchQuery: string = '';
+    isSearching = false;
+    hasSearched = false;
+    totalResults: number = 0;
+    private searchSubject = new Subject<string>();
+    private subscription: Subscription = new Subscription();
+
+  ngOnDestroy(): void {
+  this.subscription.unsubscribe();
+}
 
   loadVideosData(){
     this.videoService.getVideos().subscribe(data => {
       
       console.log( "directly loaded videos",data);
-    
+      this.allVideos = data;
       this.videos = data;
       console.log( "videos in the videos list",this.videos);
     })
   }
+  
 
   //Video redirection
 
@@ -125,5 +142,51 @@ export class VideoListComponent implements OnInit{
         this.deleteInProgress = false;
       }
     });
+  }
+
+  onSearchInput(event: any): void {
+    const query = event.target.value;
+    this.searchQuery = query;
+    this.searchSubject.next(query);
+  }
+
+  setupSearch(): void {
+    this.subscription.add(
+      this.searchSubject.pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(query => {
+          if (query.trim() === '') {
+            this.clearSearch();
+            return [];
+          }
+
+          this.isSearching = true;
+          return this.videoService.searchVideos(query, 1, 50); 
+        })
+      ).subscribe({
+        next: (response: any) => {
+          if (response && response.videos) {
+            this.videos = response.videos;
+            this.totalResults = response.totalCount;
+            this.hasSearched = true;
+          }
+          this.isSearching = false;
+        },
+        error: (error) => {
+          console.error('Error searching videos:', error);
+          this.videos = [];
+          this.isSearching = false;
+        }
+      })
+    );
+  }
+
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.videos = this.allVideos;
+    this.hasSearched = false;
+    this.totalResults = 0;
+    this.isSearching = false;
   }
 }
