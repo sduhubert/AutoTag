@@ -8,7 +8,8 @@ import {
   updateVideo,
   updateVideoTags,
   updateVideoSummary,
-  updateVideoValidation
+  updateVideoValidation,
+  searchVideos,
 } from '../controllers/video.controller.js';
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router.put('/:id', updateVideo); // put /api/video/:id
 router.put('/:id/tags', updateVideoTags); // PUT /api/video/:id/tags
 router.put('/:id/summary', updateVideoSummary); // PUT  /api/video/:id/summary
 router.put('/:id/validation', updateVideoValidation); //DELETE /api/:id/validation
+router.get('/search', searchVideos);// GET /api/video/search?q=searchTerm
 
 export default router;

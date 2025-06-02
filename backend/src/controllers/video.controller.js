@@ -7,6 +7,7 @@ import fs from 'fs';
 import FormData from 'form-data';
 import { publicDecrypt } from 'crypto';
 import VideoService from '../services/video.service.js';
+import { Op } from 'sequelize';
 
 // Get all videos
 
@@ -335,5 +336,115 @@ export const updateVideoValidation = async (req, res) => {
   } catch (err) {
     console.error('Error updating video validation:', err);
     res.status(500).json({ error: 'Failed to update video validation' });
+  }
+};
+
+
+// Search videos function - handles video search functionality
+export const searchVideos = async (req, res) => {
+  try {
+    const { q, page = 1, limit = 10 } = req.query;
+    
+    // Validate search query
+    if (!q || q.trim() === '') {
+      return res.status(400).json({ error: 'Search query is required' });
+    }
+    
+    const searchTerm = q.trim();
+    const offset = (page - 1) * limit;
+    
+    // Advanced search with relationships
+    const videos = await Video.findAndCountAll({
+      where: {
+        [Op.or]: [
+          {
+            title: {
+              [Op.iLike]: `%${searchTerm}%` // Case-insensitive search
+            }
+          }
+        ]
+      },
+      include: [
+        {
+          model: Tag,
+          through: { model: VideoTag },
+          where: {
+            name: {
+              [Op.iLike]: `%${searchTerm}%`
+            }
+          },
+          required: false // LEFT JOIN to include videos without matching tags
+        },
+        {
+          model: VideoSummary,
+          where: {
+            summary: {
+              [Op.iLike]: `%${searchTerm}%`
+            }
+          },
+          required: false // LEFT JOIN to include videos without matching summaries
+        },
+        {
+          model: db.Language,
+          through: { model: db.VideoLanguage },
+          where: {
+            name: {
+              [Op.iLike]: `%${searchTerm}%`
+            }
+          },
+          required: false
+        }
+      ],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      distinct: true, // Avoid duplicates from relationships
+      order: [['uploaded_at', 'DESC']]
+    });
+    
+    // Also search videos that have the term in title but not in relationships
+    const titleOnlyVideos = await Video.findAndCountAll({
+      where: {
+        title: {
+          [Op.iLike]: `%${searchTerm}%`
+        }
+      },
+      include: [
+        {
+          model: Tag,
+          through: { model: VideoTag },
+          required: false
+        },
+        {
+          model: VideoSummary,
+          required: false
+        },
+        {
+          model: db.Language,
+          through: { model: db.VideoLanguage },
+          required: false
+        }
+      ],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      order: [['uploaded_at', 'DESC']]
+    });
+    
+    // Combine results and remove duplicates
+    const allVideos = [...videos.rows, ...titleOnlyVideos.rows];
+    const uniqueVideos = allVideos.filter((video, index, self) => 
+      index === self.findIndex(v => v.videoid === video.videoid)
+    );
+    
+    res.json({
+      videos: uniqueVideos,
+      totalCount: uniqueVideos.length,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(uniqueVideos.length / limit),
+      searchTerm: searchTerm
+    });
+    
+  } catch (err) {
+    console.error('Search error:', err);
+    res.status(500).json({ error: 'Failed to search videos' });
   }
 };

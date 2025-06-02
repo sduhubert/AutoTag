@@ -27,6 +27,9 @@ const routes: Routes = [
   { path: 'videoplayer/:id', component: VideoplayerComponent },
   { path: 'admin', component: AdminDashboardComponent },
   { path: '**', redirectTo: '' },
+  { path: 'videos', component: VideosComponent }, 
+  { path: 'videoplayer/:id', component: VideoplayerComponent },
+  { path: '**', redirectTo: '/home' } // Wildcard route - keep as last
   
 ];
 

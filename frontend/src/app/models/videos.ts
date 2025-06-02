@@ -4,6 +4,7 @@ export class Video {
     title: string = "";
     filepath: string = "";
     description: string = "";
+    duration: string = "";    
     thumbnail: string = "Default.jpg";
     tags: { name: string; VideoTag: any }[] = [];
     video_summary: { summary: string; } = { summary: "" };

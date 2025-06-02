@@ -1,12 +1,15 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { VideoplayerComponent } from './pages/videoplayer/videoplayer.component';
 //Modules
 import { videoModule } from './pages/auto-tag/auto-tag.module';
+// Services
+import { VideoService } from './services/video.service'; 
 
 // Layout Components
 import { HeaderComponent } from './components/layout/header/header.component';
@@ -41,12 +44,15 @@ import { VideosComponent } from './pages/videos/videos.component';
   imports: [
     BrowserModule,
     FormsModule,
+    RouterModule,
     AppRoutingModule,
     videoModule,
     HttpClientModule,
     VideoplayerComponent
   ],
-  providers: [],
+  providers: [
+    VideoService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

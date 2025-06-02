@@ -1,53 +1,138 @@
 <div class="videos-page">
-    <div class="container">
-      <div class="page-header">
-        <h1 class="page-title">Tutorial Videos</h1>
-        <p class="page-subtitle">Learn how to make the most of Auto Tag</p>
-      </div>
-      <div class="video-upload-section">
-        <h3>Upload New Video</h3>
-        <div class="upload-controls">
-          <input
-            type="file"
-            id="fileInput"
-            title="Upload a video file"
-            (change)="onFileSelected($event)"
-            accept="video/*"
-          />
-          <button (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
-        </div>
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">Tutorial Videos</h1>
+      <p class="page-subtitle">Learn how to make the most of Auto Tag</p>
+    </div>
 
-        <div *ngIf="message" class="upload-message" [class.error-message]="isError">
-          {{ message }}
-        </div>
-
-        <div *ngIf="isUploading" class="upload-status">
-          Uploading video... Please wait.
+    <!-- Search section -->
+    <div class="video-search-section">
+      <div class="search-bar">
+        <div class="search-input-wrapper">
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery"
+            (input)="onSearchInput($event)"
+            placeholder="Search videos by title, tags, summary or language..."
+            class="search-input"
+            autocomplete="off"
+          >
+          <button 
+            *ngIf="searchQuery" 
+            (click)="clearSearch()" 
+            class="clear-search-button"
+            title="Clear search"
+          >
+            ✕
+          </button>
         </div>
       </div>
-      <div class="videos-grid">
-        <div class="video-card" *ngFor="let video of videos">
-          <div class="video-thumbnail" [ngClass]="video.thumbnailClass">
-            <div class="play-button">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-              </svg>
+
+      <!-- Search loading indicator -->
+      <div *ngIf="isSearching" class="search-loading">
+        <div class="search-spinner"></div>
+        <span>Searching videos...</span>
+      </div>
+
+      <!-- Search results info -->
+      <div *ngIf="hasSearched && !isSearching" class="search-results-info">
+        <p *ngIf="videos.length > 0">
+          Found <strong>{{ totalResults }}</strong> videos for "{{ searchQuery }}"
+        </p>
+        <p *ngIf="videos.length === 0">
+          No videos found for "{{ searchQuery }}"
+        </p>
+      </div>
+    </div>
+
+    <!-- Upload section (keep existing functionality) -->
+    <div class="video-upload-section">
+      <h3>Upload New Video</h3>
+      <div class="upload-controls">
+        <input
+          type="file"
+          id="fileInput"
+          title="Upload a video file"
+          (change)="onFileSelected($event)"
+          accept="video/*"
+        />
+        <button (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
+      </div>
+
+      <div *ngIf="message" class="upload-message" [class.error-message]="isError">
+        {{ message }}
+      </div>
+
+      <div *ngIf="isUploading" class="upload-status">
+        Uploading video... Please wait.
+      </div>
+    </div>
+
+    <!-- Loading state for videos -->
+    <div *ngIf="isLoadingVideos" class="videos-loading">
+      <div class="loading-spinner"></div>
+      <span>Loading videos...</span>
+    </div>
+
+    <!-- Videos grid -->
+    <div class="videos-grid" *ngIf="!isLoadingVideos">
+      <div class="video-card" *ngFor="let video of videos" (click)="playVideo(video)">
+        <div class="video-thumbnail" [ngClass]="getThumbnailClass(video)">
+          <!-- Keep your existing color-based thumbnail system -->
+          <div class="play-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </div>
+          <div class="video-duration">{{ formatDuration(video.duration) }}</div>
+          <!-- Validation badge -->
+          <div *ngIf="video.validated" class="validated-badge" title="Validated video">✓</div>
+        </div>
+        <div class="video-content">
+          <h3 class="video-title" [title]="video.title">{{ video.title }}</h3>
+          <p class="video-description">{{ getDescription(video) }}</p>
+          <!-- Additional information -->
+          <div class="video-meta">
+            <div class="video-tags" *ngIf="video.tags && video.tags.length > 0">
+              <span class="tags-label">Tags:</span>
+              <span class="tags-text">{{ getTagNames(video) }}</span>
             </div>
-            <div class="video-duration">{{ video.duration }}</div>
+            <div class="video-info">
+              <span class="video-id">ID: {{ video.videoid }}</span>
+              <span class="upload-date">{{ video.uploaded_at | date:'short' }}</span>
+            </div>
           </div>
-          <div class="video-content">
-            <h3 class="video-title">{{ video.title }}</h3>
-            <p class="video-description">{{ video.description }}</p>
+          <!-- Action buttons -->
+          <div class="video-actions">
+            <button class="btn btn-primary" (click)="playVideo(video)">
+              ▶ Watch Video
+            </button>
           </div>
-        </div>
-      </div>
-
-      <div class="videos-footer">
-        <p>Need more guidance? Check out our comprehensive documentation or contact support.</p>
-        <div class="footer-buttons">
-          <button class="btn btn-primary">Documentation</button>
-          <button class="btn btn-secondary">Contact Support</button>
         </div>
       </div>
     </div>
+
+    <!-- State when no videos -->
+    <div *ngIf="!isLoadingVideos && videos.length === 0 && !hasSearched" class="no-videos">
+      <div class="no-videos-icon">🎥</div>
+      <h3>No videos available</h3>
+      <p>Upload your first video to get started!</p>
+    </div>
+
+    <!-- State when no search results -->
+    <div *ngIf="!isLoadingVideos && videos.length === 0 && hasSearched" class="no-search-results">
+      <div class="no-results-icon">🔍</div>
+      <h3>No videos found</h3>
+      <p>Try different search terms or check your spelling</p>
+      <button (click)="clearSearch()" class="btn btn-primary">Show All Videos</button>
+    </div>
+
+    <div class="videos-footer">
+      <p>Need more guidance? Check out our comprehensive documentation or contact support.</p>
+      <div class="footer-buttons">
+        <button class="btn btn-primary">Documentation</button>
+        <button class="btn btn-secondary">Contact Support</button>
+      </div>
+    </div>
   </div>
+</div>
