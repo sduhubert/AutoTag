@@ -1,5 +1,5 @@
 import db from '../models/index.js';
-const { Video, Tag, VideoTag, VideoSummary } = db;
+const { Video, Tag, VideoTag, VideoSummary, Language, VideoLanguage } = db;
 import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
 import axios from 'axios';
@@ -344,105 +344,57 @@ export const updateVideoValidation = async (req, res) => {
 export const searchVideos = async (req, res) => {
   try {
     const { q, page = 1, limit = 10 } = req.query;
-    
-    // Validate search query
+
     if (!q || q.trim() === '') {
       return res.status(400).json({ error: 'Search query is required' });
     }
-    
+
     const searchTerm = q.trim();
     const offset = (page - 1) * limit;
-    
-    // Advanced search with relationships
-    const videos = await Video.findAndCountAll({
+
+    const { rows: videos, count: totalCount } = await Video.findAndCountAll({
       where: {
         [Op.or]: [
-          {
-            title: {
-              [Op.iLike]: `%${searchTerm}%` // Case-insensitive search
-            }
-          }
-        ]
+          { title: { [Op.iLike]: `%${searchTerm}%` } },
+          { '$tags.name$': { [Op.iLike]: `%${searchTerm}%` } },
+          { '$video_summary.summary$': { [Op.iLike]: `%${searchTerm}%` } },
+          { '$languages.name$': { [Op.iLike]: `%${searchTerm}%` } },
+        ],
       },
       include: [
         {
           model: Tag,
-          through: { model: VideoTag },
-          where: {
-            name: {
-              [Op.iLike]: `%${searchTerm}%`
-            }
-          },
-          required: false // LEFT JOIN to include videos without matching tags
+          as: 'tags',                    // make sure this matches your model alias
+          through: { attributes: [] },
+          required: false,
         },
         {
           model: VideoSummary,
-          where: {
-            summary: {
-              [Op.iLike]: `%${searchTerm}%`
-            }
-          },
-          required: false // LEFT JOIN to include videos without matching summaries
+          as: 'video_summary',           // make sure this matches your model alias
+          required: false,
         },
         {
           model: db.Language,
-          through: { model: db.VideoLanguage },
-          where: {
-            name: {
-              [Op.iLike]: `%${searchTerm}%`
-            }
-          },
-          required: false
-        }
-      ],
-      limit: parseInt(limit),
-      offset: parseInt(offset),
-      distinct: true, // Avoid duplicates from relationships
-      order: [['uploaded_at', 'DESC']]
-    });
-    
-    // Also search videos that have the term in title but not in relationships
-    const titleOnlyVideos = await Video.findAndCountAll({
-      where: {
-        title: {
-          [Op.iLike]: `%${searchTerm}%`
-        }
-      },
-      include: [
-        {
-          model: Tag,
-          through: { model: VideoTag },
-          required: false
+          as: 'languages',               // make sure this matches your model alias
+          through: { attributes: [] },
+          required: false,
         },
-        {
-          model: VideoSummary,
-          required: false
-        },
-        {
-          model: db.Language,
-          through: { model: db.VideoLanguage },
-          required: false
-        }
       ],
+      distinct: true,      // ensures correct count with joins
+      offset,
       limit: parseInt(limit),
-      offset: parseInt(offset),
-      order: [['uploaded_at', 'DESC']]
+      order: [['uploaded_at', 'DESC']],
+      subQuery: false,     // IMPORTANT: disables subquery to fix missing FROM-clause error
     });
-    
-    // Combine results and remove duplicates
-    const allVideos = [...videos.rows, ...titleOnlyVideos.rows];
-    const uniqueVideos = allVideos.filter((video, index, self) => 
-      index === self.findIndex(v => v.videoid === video.videoid)
-    );
-    
+
     res.json({
-      videos: uniqueVideos,
-      totalCount: uniqueVideos.length,
+      videos,
+      totalCount,
       currentPage: parseInt(page),
-      totalPages: Math.ceil(uniqueVideos.length / limit),
-      searchTerm: searchTerm
+      totalPages: Math.ceil(totalCount / limit),
+      searchTerm,
     });
-    
+
   } catch (err) {
     console.error('Search error:', err);
     res.status(500).json({ error: 'Failed to search videos' });
