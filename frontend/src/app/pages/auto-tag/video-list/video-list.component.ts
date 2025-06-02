@@ -82,12 +82,12 @@ export class VideoListComponent implements OnInit{
     }
 
     // Check file type
-    // const fileType = this.selectedFile.type;
-    // if (!(fileType.includes('video/') && (fileType.includes('audio/')))) {
-    //   this.message = 'Please select a video file';
-    //   this.isError = true;
-    //   return;
-    // }
+    const fileType = this.selectedFile.type;
+    if (fileType !== 'video/mp4')  {
+      this.message = 'Please select a correct video file (mp4)';
+      this.isError = true;
+      return;
+    }
 
     this.isUploading = true;
     this.message = '';
