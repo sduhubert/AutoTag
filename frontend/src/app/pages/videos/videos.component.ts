@@ -1,6 +1,3 @@
-// FRONTEND: src/app/pages/videos/videos.component.ts
-// REPLACE your existing videos.component.ts with this version (NO thumbnail functionality):
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { Video } from '../../models/videos';
+import { VideoSearchResponse } from '../../services/video.service';
 
 @Injectable({
   providedIn: 'root'
@@ -87,5 +88,10 @@ export class videoService {
         return throwError(() => new Error('Failed to update video validation'));
       })
     );
+  }
+
+  searchVideos(query: string, page = 1, limit = 50): Observable<VideoSearchResponse> {
+    const url = `${this.apiUrl}/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`;
+    return this.http.get<VideoSearchResponse>(url);
   }
 }

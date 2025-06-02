@@ -4,6 +4,47 @@
       <h1 class="page-title">Tutorial Videos</h1>
       <p class="page-subtitle">Learn how to make the most of Auto Tag</p>
     </div>
+<!-- SEARCH SECTION -->
+<div class="video-search-section">
+  <div class="search-bar">
+    <div class="search-input-wrapper">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onSearchInput($event)"
+        placeholder="Search videos by title, tags, summary or language..."
+        class="search-input"
+        aria-label="Search videos"
+        autocomplete="off"
+      />
+      <button
+        *ngIf="searchQuery"
+        (click)="clearSearch()"
+        class="clear-search-button"
+        title="Clear search"
+        aria-label="Clear search"
+      >
+        ✕
+      </button>
+    </div> <!-- close search-input-wrapper -->
+  </div> <!-- close search-bar -->
+
+  <!-- Search loading indicator -->
+  <div *ngIf="isSearching" class="search-loading">
+    <div class="search-spinner"></div>
+    <span>Searching videos...</span>
+  </div>
+
+  <!-- Search results info -->
+  <div *ngIf="hasSearched && !isSearching" class="search-results-info">
+    <p *ngIf="videos.length > 0">
+      Found <strong>{{ totalResults }}</strong> videos for "{{ searchQuery }}"
+    </p>
+    <p *ngIf="videos.length === 0">
+      No videos found for "{{ searchQuery }}"
+    </p>
+  </div>
+</div>
     <div class="video-upload-section">
       <h3>Upload New Video</h3>
       <div class="upload-controls">
