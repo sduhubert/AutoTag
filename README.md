@@ -81,15 +81,6 @@ docker-compose down
 - **Database (PostgreSQL):** Port 5432
 - **AI Module:** Port 8001
 
-### To log in, use the following credentials
-
-To log in, use the following credentials:
-
-| Role       | Username/email | Password      |
-|------------|----------------|---------------|
-| **User**   | user1          | password1     |
-| **Admin**  | admin          | admin1        |
-
 ## Development approach
 
 Followed by Agile Scrum methodology:
